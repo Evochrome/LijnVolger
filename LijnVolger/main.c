@@ -1,8 +1,7 @@
 #include <string.h>
-
 #include "typedefs.h"
-#include "maze.h"
-#include "router.h"
+#include "maze.c"
+#include "router.c"
 
 coords getCoords(char name[]);
 cell maze[13][13];
@@ -11,8 +10,9 @@ int main()
 {
     //Initialization of maze.
     initMinOnes();
-    initZeros();
-    nameMaze("MazeNames.txt"); //Filename with description of maze.
+//    initZeros();
+    nameMaze(); //Filename with description of maze.
+    assignStations();
 
 
     //Post initialization events here.
