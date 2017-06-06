@@ -13,6 +13,7 @@ clock_t t_start;
 int main()
 {
     //Initialization of maze.
+
     initMinOnes();
 //    initZeros();
     nameMaze(); //Filename with description of maze.
@@ -50,12 +51,12 @@ coords getCoords(char name[])
     return cords;
 }
 
-void init_time()
+void init_time ()
 {
     t_start = clock();
 }
 
 double get_time()
 {
-    return (double)((clock() - t_start)/CLOCKS_PER_SEC);
+    return ((double) (clock() - t_start) / CLOCKS_PER_SEC);
 }
