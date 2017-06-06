@@ -1,11 +1,12 @@
 #include <string.h>
 #include <stdio.h>
 #include <Windows.h>
-#include "xbee.h"
 #include <time.h>
+
 #include "typedefs.h"
 #include "maze.h"
 #include "router.h"
+#include "xbee.h"
 
 coords getCoords(char name[]);
 void init_time();
