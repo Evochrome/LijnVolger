@@ -5,7 +5,7 @@
 
 #include "xbee.h"
 
-#define COMPORT "COM5"
+#define COMPORT "COM8"
 #define BAUDRATE CBR_9600
 
 //--------------------------------------------------------------
@@ -85,7 +85,7 @@ int writeByte(HANDLE hSerial, char *buffWrite){
 }
 
 
-void initXbee(HANDLE hSerial)
+HANDLE initXbee(HANDLE hSerial)
 {
 
 
@@ -118,4 +118,6 @@ void initXbee(HANDLE hSerial)
     //----------------------------------------------------------
 
     initSio(hSerial);
+
+    return hSerial;
 }

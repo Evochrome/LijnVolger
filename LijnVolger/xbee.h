@@ -3,7 +3,8 @@
 
 #include <Windows.h>
 
-void initXbee(HANDLE hSerial);
+
+HANDLE initXbee(HANDLE hSerial);
 
 void initSio(HANDLE hSerial);
 int readByte(HANDLE hSerial, char *buffRead);

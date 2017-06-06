@@ -10,12 +10,13 @@
 
 coords getCoords(char name[]);
 cell maze[13][13];
+char byteBuffer[BUFSIZ+1];
 int programStatus = 1; //0 = program should turn of, 1 = should run.
 
 
 int main()
 {
-    char byteBuffer[BUFSIZ+1];
+    byteBuffer[0] = '0';
     //Initialization of maze.
     initMinOnes();
     initZeros();
@@ -25,19 +26,22 @@ int main()
 
     //Xbee initialization.
     HANDLE hSerial = NULL;
-
-    initXbee(hSerial);
+    hSerial = initXbee(hSerial);
 
     //Main loop of the program.
     while(programStatus)
     {
     readByte(hSerial, byteBuffer);
 
+    printf("Local byteBuffer: %s\n", byteBuffer);
+
     //////////////////////////////
     //    Decide what do to based on byteBuffer here, and write to it.
 
     gets(byteBuffer); //Temporary user input.
     //////////////////////////////
+
+
 
     writeByte(hSerial, byteBuffer);
 
