@@ -4,6 +4,8 @@
 
 #include "maze.h"
 
+int N = 13;
+
 void initMinOnes() {
     int i, j;
 

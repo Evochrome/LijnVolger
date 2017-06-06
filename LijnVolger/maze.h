@@ -5,7 +5,7 @@
 
 extern cell maze[13][13];
 coords stations[12];
-int firstOffset, middleLine, lastOffset, N = 13;
+int firstOffset, middleLine, lastOffset;
 int countX, countY, countEdgeY, countEdgeX, x, y;
 
 
