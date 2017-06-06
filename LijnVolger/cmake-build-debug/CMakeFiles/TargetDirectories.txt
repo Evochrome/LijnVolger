@@ -1,3 +1,3 @@
-C:/Users/jetse/Documents/GitHub/MazeRouter/LijnVolger/LijnVolger/cmake-build-debug/CMakeFiles/LijnVolger.dir
-C:/Users/jetse/Documents/GitHub/MazeRouter/LijnVolger/LijnVolger/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/jetse/Documents/GitHub/MazeRouter/LijnVolger/LijnVolger/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+C:/Users/Stefanie/CLionProjects/LineFollower/LijnVolger/LijnVolger/cmake-build-debug/CMakeFiles/LijnVolger.dir
+C:/Users/Stefanie/CLionProjects/LineFollower/LijnVolger/LijnVolger/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Stefanie/CLionProjects/LineFollower/LijnVolger/LijnVolger/cmake-build-debug/CMakeFiles/rebuild_cache.dir
