@@ -24,6 +24,8 @@ int main()
     return 0;
 }
 
+// COMMENT VOOR BRANCHTEST
+
 coords getCoords(char name[])
 {
     int x, y;
