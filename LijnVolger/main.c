@@ -1,17 +1,20 @@
 #include <string.h>
 #include <stdio.h>
 #include <Windows.h>
-
+#include "xbee.h"
+#include <time.h>
 #include "typedefs.h"
 #include "maze.h"
 #include "router.h"
-#include "xbee.h"
-
 
 coords getCoords(char name[]);
+void init_time();
+double get_time();
 cell maze[13][13];
 char byteBuffer[BUFSIZ+1];
 int programStatus = 1; //0 = program should turn of, 1 = should run.
+
+clock_t t_start;
 
 
 int main()
@@ -19,8 +22,11 @@ int main()
     byteBuffer[0] = '0';
     //Initialization of maze.
     initMinOnes();
-    initZeros();
-    nameMaze("MazeNames.txt"); //Filename with description of maze.
+    nameMaze(); //Filename with description of maze.
+    assignStations();
+
+
+    //Post initialization events here.
     blockEdges();   //Find out what edges/crossings need to be blocked.
     router();       //Lee's algorithm.
 
@@ -77,4 +83,14 @@ coords getCoords(char name[])
     }
 
     return cords;
+}
+
+void init_time()
+{
+    t_start = clock();
+}
+
+double get_time()
+{
+    return (double)((clock() - t_start)/CLOCKS_PER_SEC);
 }

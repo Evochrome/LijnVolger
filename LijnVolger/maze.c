@@ -4,8 +4,7 @@
 
 #include "maze.h"
 
-void initMinOnes()
-{
+void initMinOnes() {
     int i, j;
 
     for(i = 0; i < 13; i++)
@@ -17,59 +16,90 @@ void initMinOnes()
     }
 }
 
-void initZeros()
-{
-    fillLine(4,0,4,12);
-    fillLine(6,0,6,12);
-    fillLine(8,0,8,12);
+void assignStations() {
+    int stationNum = 0;
 
-    fillLine(0,4,12,4);
-    fillLine(0,6,12,6);
-    fillLine(0,8,12,8);
+    for(x = firstOffset; x <= lastOffset; x++) {
+        if(!(x%2)) {
+            stationNum++;
+            sprintf(maze[x][N-1].name, "%d", stationNum);
+            stations[stationNum].x = 0;
+            stations[stationNum].y = x;
+        }
+    }
 
-    fillLine(2,2,10,2);
-    fillLine(2,10,10,10);
-    fillLine(2,2,2,10);
-    fillLine(10,2,10,10);
-}
+    for(y = lastOffset; y >= firstOffset; y--) {
+        if(!(y%2)) {
+            stationNum++;
+            sprintf(maze[N-1][y].name, "%d", stationNum);
+            stations[stationNum].x = y;
+            stations[stationNum].y = 0;
+        }
+    }
 
-void fillLine(int x1, int y1, int x2, int y2)
-{
-    int x, y;
+    for(x = lastOffset; x >= firstOffset; x--) {
+        if(!(x%2)) {
+            stationNum++;
+            sprintf(maze[x][0].name, "%d", stationNum);
+            stations[stationNum].x = (N-1);
+            stations[stationNum].y = x;
+        }
+    }
 
-    for(x = x1; x <= x2; x++)
-    {
-        for(y = y1; y <= y2; y++)
-        {
-            maze[x][y].v = 0;
+    for(y = firstOffset; y <= lastOffset; y++) {
+        if(!(y%2)) {
+            stationNum++;
+            sprintf(maze[0][y].name, "%d", stationNum);
+            stations[stationNum].x = y;
+            stations[stationNum].y = (N-1);
         }
     }
 }
 
-void nameMaze(char namesFile[])
-{
-    char buf[8];
-    int x, y;
-    FILE *file;
-    file = fopen(namesFile, "r");
+void nameMaze() {
+    middleLine = (N - 1) / 2;
+    firstOffset = middleLine - 2;
+    lastOffset = middleLine + 2;
+    for(x = 0; x < N; x++) {
+        for(y = 0; y < N; y++) {
+            if(!(x % 2) && x >= (firstOffset-2) && x <= (lastOffset+2)) {
+                maze[x][y].v = 0;
+                sprintf(maze[x][y].name, "");
+            }else if(!(y % 2) && y >= (firstOffset-2) && y <= (lastOffset+2)) {
+                maze[x][y].v = 0;
+                sprintf(maze[x][y].name, "");
+            }else {
+                maze[x][y].v = -1;
+                sprintf(maze[x][y].name, "");
+            }
+            if(!(y%2) && !(x%2) && x >= (firstOffset -2) && y >= (firstOffset -2) && x <= (lastOffset +2) && y <= (lastOffset+2)) {
+                sprintf(maze[x][y].name, "c%d%d", countX, countY);
+                countY++;
+            }
 
-    for(x = 0; x < 13; x++)
-    {
-        for(y = 0; y < 13; y++)
-        {
-            if(maze[y][x].v == 0)
-            {
-                fscanf(file, "%s", buf);
-                strcpy(maze[y][x].name, buf);
+            if(((y%2) ^ (x%2)) && x >= (firstOffset -2) && y >= (firstOffset -2) && x <= (lastOffset +2) && y <= (lastOffset+2)) {
+                if(x%2) {
+                    /* column is odd */
+                    sprintf(maze[x][y].name, "e%d%d%d%d", (countEdgeX - 1), countEdgeY, (countEdgeX), countEdgeY);
+                }else {
+                    sprintf(maze[x][y].name, "e%d%d%d%d", countEdgeX, countEdgeY, countEdgeX, (countEdgeY + 1));
+                }
+                countEdgeY++;
             }
         }
-    }
+        countY = 0;
+        countEdgeY = 0;
 
-    fclose(file);
+        if(!(x%2) && x >= (firstOffset -2) && x <= (lastOffset +2)) {
+            countX++;
+            countEdgeX++;
+        }
+    }
+//    sprintf(maze[firstOffset-2][firstOffset-2].name, "test");
+    printf("\n middleline: %d\n firstOffset: %d\n lastOffset: %d\n", middleLine, firstOffset, lastOffset);
 }
 
-void blockEdges()
-{
+void blockEdges() {
     int i, n;
     char block[8];
     coords cords;
@@ -92,8 +122,7 @@ void blockEdges()
 }
 
 
-void displayMaze()
-{
+void displayMaze() {
     int i, j;
 
     for(i = 0; i < 13; i++)
@@ -102,11 +131,11 @@ void displayMaze()
         {
             if(maze[j][i].v != -1)
             {
-                printf("%3d", maze[j][i].v);
+                printf("%3d\t", maze[j][i].v);
             }
             else
             {
-                printf("   ");
+                printf("\t");
             }
         }
         printf("\n");

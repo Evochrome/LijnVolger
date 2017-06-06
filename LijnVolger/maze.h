@@ -4,14 +4,17 @@
 #include "typedefs.h"
 
 extern cell maze[13][13];
+coords stations[12];
+int firstOffset, middleLine, lastOffset, N = 13;
+int countX, countY, countEdgeY, countEdgeX, x, y;
+
 
 coords getCoords(char name[]); //Defined in main.c
 
 void initMinOnes();
 void displayMaze();
-void initZeros();
-void fillLine(int x1, int y1, int x2, int y2);
-void nameMaze(char namesFile[]);
+void assignStations();
+void nameMaze();
 void blockEdges();
 
 #endif // MAZE_H_INCLUDED
