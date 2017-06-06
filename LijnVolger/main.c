@@ -1,10 +1,14 @@
 #include <string.h>
+#include <time.h>
 #include "typedefs.h"
 #include "maze.c"
 #include "router.c"
 
 coords getCoords(char name[]);
+void init_time();
+double get_time();
 cell maze[13][13];
+clock_t t_start;
 
 int main()
 {
@@ -44,4 +48,14 @@ coords getCoords(char name[])
     }
 
     return cords;
+}
+
+void init_time()
+{
+    t_start = clock();
+}
+
+double get_time()
+{
+    return (double)((clock() - t_start)/CLOCKS_PER_SEC);
 }
