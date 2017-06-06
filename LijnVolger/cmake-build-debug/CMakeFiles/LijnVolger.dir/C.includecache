@@ -9,6 +9,8 @@
 C:/Users/jetse/Documents/GitHub/MazeRouter/LijnVolger/LijnVolger/main.c
 string.h
 -
+time.h
+-
 typedefs.h
 C:/Users/jetse/Documents/GitHub/MazeRouter/LijnVolger/LijnVolger/typedefs.h
 maze.c

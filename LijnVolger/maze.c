@@ -95,8 +95,6 @@ void nameMaze() {
             countEdgeX++;
         }
     }
-//    sprintf(maze[firstOffset-2][firstOffset-2].name, "test");
-    printf("\n middleline: %d\n firstOffset: %d\n lastOffset: %d\n", middleLine, firstOffset, lastOffset);
 }
 
 void blockEdges() {
@@ -131,7 +129,7 @@ void displayMaze() {
         {
             if(maze[j][i].v != -1)
             {
-                printf("%3d\t", maze[j][i].v);
+                printf("%s\t", maze[j][i].name);
             }
             else
             {
