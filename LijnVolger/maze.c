@@ -138,7 +138,7 @@ void displayMaze()
             }
             else
             {
-                printf("   ");
+                printf("\t");
             }
         }
         printf("\n");
