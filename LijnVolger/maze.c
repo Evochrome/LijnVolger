@@ -4,8 +4,9 @@
 
 #include "maze.h"
 
-void initMinOnes()
-{
+int N = 13;
+
+void initMinOnes() {
     int i, j;
 
     for(i = 0; i < 13; i++)
@@ -17,91 +18,88 @@ void initMinOnes()
     }
 }
 
-void assignStations()
-{
+void assignStations() {
     int stationNum = 0;
-    for(r = firstOffset; r <= lastOffset; r++) {
-        if(!(r%2)) {
+
+    for(x = firstOffset; x <= lastOffset; x++) {
+        if(!(x%2)) {
             stationNum++;
-            sprintf(maze[N-1][r].name, "%d", stationNum);
-            stations[stationNum].x = r;
-            stations[stationNum].y = (N-1);
+            sprintf(maze[x][N-1].name, "%d", stationNum);
+            stations[stationNum].x = 0;
+            stations[stationNum].y = x;
         }
     }
 
-    for(c = lastOffset; c >= firstOffset; c--) {
-        if(!(c%2)) {
+    for(y = lastOffset; y >= firstOffset; y--) {
+        if(!(y%2)) {
             stationNum++;
-            sprintf(maze[c][N-1].name, "%d", stationNum);
-            stations[stationNum].x = (N-1);
-            stations[stationNum].y = c;
-        }
-    }
-
-    for(r = lastOffset; r >= firstOffset; r--) {
-        if(!(r%2)) {
-            stationNum++;
-            sprintf(maze[0][r].name, "%d", stationNum);
-            stations[stationNum].x = r;
+            sprintf(maze[N-1][y].name, "%d", stationNum);
+            stations[stationNum].x = y;
             stations[stationNum].y = 0;
         }
     }
 
-    for(c = firstOffset; c <= lastOffset; c++) {
-        if(!(c%2)) {
+    for(x = lastOffset; x >= firstOffset; x--) {
+        if(!(x%2)) {
             stationNum++;
-            sprintf(maze[c][0].name, "%d", stationNum);
-            stations[stationNum].x = 0;
-            stations[stationNum].y = c;
+            sprintf(maze[x][0].name, "%d", stationNum);
+            stations[stationNum].x = (N-1);
+            stations[stationNum].y = x;
         }
     }
 
+    for(y = firstOffset; y <= lastOffset; y++) {
+        if(!(y%2)) {
+            stationNum++;
+            sprintf(maze[0][y].name, "%d", stationNum);
+            stations[stationNum].x = y;
+            stations[stationNum].y = (N-1);
+        }
+    }
 }
 
-void nameMaze()
-{
+void nameMaze() {
     middleLine = (N - 1) / 2;
     firstOffset = middleLine - 2;
     lastOffset = middleLine + 2;
-    for(c = 0; c < N; c++) {
-        for(r = 0; r < N; r++) {
-            if(!(c % 2) && c >= firstOffset && c <= lastOffset) {
-                maze[c][r].v = 0;
-                sprintf(maze[c][r].name, "");
-            }else if(!(r % 2) && r >= firstOffset && r <= lastOffset) {
-                maze[c][r].v = 0;
-                sprintf(maze[c][r].name, "");
+    for(x = 0; x < N; x++) {
+        for(y = 0; y < N; y++) {
+            if(!(x % 2) && x >= (firstOffset-2) && x <= (lastOffset+2)) {
+                maze[x][y].v = 0;
+                sprintf(maze[x][y].name, "");
+            }else if(!(y % 2) && y >= (firstOffset-2) && y <= (lastOffset+2)) {
+                maze[x][y].v = 0;
+                sprintf(maze[x][y].name, "");
             }else {
-                maze[c][r].v = -1;
-                sprintf(maze[c][r].name, "");
+                maze[x][y].v = -1;
+                sprintf(maze[x][y].name, "");
             }
-            if(!(r%2) && !(c%2) && c >= (firstOffset -2) && r >= (firstOffset -2) && c <= (lastOffset +2) && r <= (lastOffset+2)) {
-                sprintf(maze[c][r].name, "r%d%d", countC, countR);
-                countR++;
+            if(!(y%2) && !(x%2) && x >= (firstOffset -2) && y >= (firstOffset -2) && x <= (lastOffset +2) && y <= (lastOffset+2)) {
+                sprintf(maze[x][y].name, "c%d%d", countX, countY);
+                countY++;
             }
 
-            if(((r%2) ^ (c%2)) && c >= (firstOffset -2) && r >= (firstOffset -2) && c <= (lastOffset +2) && r <= (lastOffset+2)) {
-                if(c%2) {
-                    /* row is odd */
-                    sprintf(maze[c][r].name, "e%d%d%d%d", (countEdgeC - 1) , countEdgeR, (countEdgeC), countEdgeR);
+            if(((y%2) ^ (x%2)) && x >= (firstOffset -2) && y >= (firstOffset -2) && x <= (lastOffset +2) && y <= (lastOffset+2)) {
+                if(x%2) {
+                    /* column is odd */
+                    sprintf(maze[x][y].name, "e%d%d%d%d", (countEdgeX - 1), countEdgeY, (countEdgeX), countEdgeY);
                 }else {
-                    sprintf(maze[c][r].name, "e%d%d%d%d", countEdgeC, countEdgeR, countEdgeC, (countEdgeR + 1));
+                    sprintf(maze[x][y].name, "e%d%d%d%d", countEdgeX, countEdgeY, countEdgeX, (countEdgeY + 1));
                 }
-                countEdgeR++;
+                countEdgeY++;
             }
         }
-        countR = 0;
-        countEdgeR = 0;
+        countY = 0;
+        countEdgeY = 0;
 
-        if(!(c%2) && c >= (firstOffset -2) && c <= (lastOffset +2)) {
-            countC++;
-            countEdgeC++;
+        if(!(x%2) && x >= (firstOffset -2) && x <= (lastOffset +2)) {
+            countX++;
+            countEdgeX++;
         }
     }
 }
 
-void blockEdges()
-{
+void blockEdges() {
     int i, n;
     char block[8];
     coords cords;
@@ -124,8 +122,7 @@ void blockEdges()
 }
 
 
-void displayMaze()
-{
+void displayMaze() {
     int i, j;
 
     for(i = 0; i < 13; i++)
@@ -138,7 +135,7 @@ void displayMaze()
             }
             else
             {
-                printf("   ");
+                printf("\t");
             }
         }
         printf("\n");

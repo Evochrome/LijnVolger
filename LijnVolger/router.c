@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "router.h"
 
 void router()
@@ -8,7 +9,7 @@ void router()
 
     do
     {
-        scanf("%s%s", startChar, endChar);
+        scanf("%s%s", endChar, startChar);
 
         startPos = getCoords(startChar);
         endPos = getCoords(endChar);
@@ -69,6 +70,53 @@ void setSurroundings(int x, int y, int i)
     }
 }
 
+int find_nearest_point(char* point1, char* point2, char* point3){
+    int minVal = 30, nearest, x, y;
+    for(x=0; x<13; x+=12){
+        for(y=0; y<13; y++){
+            if(strcmp(maze[x][y].name, point1)==0) {
+                if (maze[x][y].v < minVal) {
+                    minVal = maze[x][y].v;
+                    nearest = 1;
+                }
+            }else if(strcmp(maze[x][y].name, point2)==0){
+                if (maze[x][y].v < minVal) {
+                    minVal = maze[x][y].v;
+                    nearest = 2;
+                }
+            }else if(strcmp(maze[x][y].name, point3)==0){
+                if(maze[x][y].v<minVal){
+                    minVal = maze[x][y].v;
+                    nearest = 3;
+                }
+            }
+        }
+    }
+
+    for(y=0; y<13; y+=12){
+        for(x=0; x<13; x++){
+            if(strcmp(maze[x][y].name, point1)==0) {
+                if (maze[x][y].v < minVal) {
+                    minVal = maze[x][y].v;
+                    nearest = 1;
+                }
+            }else if(strcmp(maze[x][y].name, point2)==0){
+                if (maze[x][y].v < minVal) {
+                    minVal = maze[x][y].v;
+                    nearest = 2;
+                }
+            }else if(strcmp(maze[x][y].name, point3)==0){
+                if(maze[x][y].v<minVal){
+                    minVal = maze[x][y].v;
+                    nearest = 3;
+                }
+            }
+        }
+    }
+//    printf("\n%d\n", nearest);
+    return nearest;
+}
+
 void traceBack(coords endPos, coords startPos)
 {
     coords currentPos;
@@ -81,6 +129,7 @@ void traceBack(coords endPos, coords startPos)
     }
 
     printf("%s\n", maze[currentPos.x][currentPos.y].name);
+    printf("\n%d\n", find_nearest_point("12", "10", "3"));
 }
 
 coords checkSurroundings(coords curPos)
