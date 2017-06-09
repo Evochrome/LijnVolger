@@ -4,9 +4,9 @@
 #include <time.h>
 
 #include "typedefs.h"
-#include "maze.h"
-#include "router.h"
-#include "xbee.h"
+#include "maze.c"
+#include "router.c"
+#include "xbee.c"
 
 coords getCoords(char name[]);
 void init_time();
@@ -37,7 +37,7 @@ int main()
 
     //Main loop of the program.
     while(programStatus) {
-    readByte(hSerial, byteBuffer);
+    //readByte(hSerial, byteBuffer);
 
     printf("Local byteBuffer: %s\n", byteBuffer);
 

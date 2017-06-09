@@ -140,11 +140,11 @@ void displayMaze() {
         {
             if(maze[j][i].v != -1)
             {
-                printf("%3d", maze[j][i].v);
+                printf("%s\t", maze[j][i].name);
             }
             else
             {
-                printf("   ");
+                printf("\t");
             }
         }
         printf("\n");

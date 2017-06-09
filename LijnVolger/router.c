@@ -2,6 +2,8 @@
 #include <string.h>
 #include "router.h"
 
+
+
 void router()
 {
     int i, j, nearestPoint = 0;
@@ -148,13 +150,19 @@ int find_nearest_point(char* point1, char* point2, char* point3){
 
 void traceBack(coords endPos, coords startPos)
 {
-    coords currentPos;
+    coords currentPos, PreCross, Cross;
     currentPos.x = startPos.x;
     currentPos.y = startPos.y;
 
+    initialize_translator();
+    Cross.x = 97;
+    PreCross.x = 97;
     while(!((currentPos.x == endPos.x) && (currentPos.y == endPos.y)))
     {
+        PreCross = Cross;
+        Cross = currentPos;
         currentPos = checkSurroundings(currentPos);
+        map_translator(PreCross, Cross, currentPos);
     }
 
     printf("%s\n", maze[currentPos.x][currentPos.y].name);
@@ -195,3 +203,48 @@ coords checkSurroundings(coords curPos)
 
     return curPos;
 }
+
+
+void initialize_translator()
+{
+    head = (nav*)malloc(sizeof(nav));
+    head->next = NULL;
+}
+
+
+void map_translator(coords LastPos, coords CurPos, coords NextPos)
+{
+    if (strncmp(maze[CurPos.x][CurPos.y].name, "c", 1) == 0 && LastPos.x != 97 && CurPos.x != 97) {
+        nav *list = head;
+        nav *new = (nav*)malloc(sizeof(nav));
+        new->next = NULL;
+        if (head->next != NULL) {
+            while (list->next != NULL) {
+                list = list->next;
+            }
+        }
+        list->next = new;
+        if (CurPos.x > LastPos.x) {
+            if (NextPos.y < CurPos.y) list->c = 'l';
+            else if (NextPos.x > CurPos.x) list->c = 's';
+            else if (NextPos.y > CurPos.y) list->c = 'r';
+            else printf("Direction algorithm failed in directing to the next position, driving to the right side of the grid.\n");
+        } else if (CurPos.y > LastPos.y) {
+            if (NextPos.x > CurPos.x) list->c = 'l';
+            else if (NextPos.y > CurPos.y) list->c = 's';
+            else if (NextPos.x < CurPos.x) list->c = 'r';
+            else printf("\nDirection algorithm failed in directing to the next position, driving to the bottom of the grid.\n");
+        } else if (CurPos.x < LastPos.x) {
+            if (NextPos.y > CurPos.y) list->c = 'l';
+            else if (NextPos.x < CurPos.x) list->c = 's';
+            else if (NextPos.y < CurPos.y) list->c = 'r';
+            else printf("\nDirection algorithm failed in directing to the next position, driving to the left side of the grid.\n");
+        } else if (CurPos.y < LastPos.y) {
+            if (NextPos.x < CurPos.x) list->c = 'l';
+            else if (NextPos.y < CurPos.y) list->c = 's';
+            else if (NextPos.x > CurPos.x) list->c = 'r';
+            else printf("\nDirection algorithm failed in directing to the next position, driving to the top of the grid.\n");
+        } else printf("\nDirection algorithm failed in determining the current direction.\n");
+    }
+};
+
