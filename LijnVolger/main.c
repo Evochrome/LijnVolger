@@ -8,6 +8,7 @@
 #include "router.h"
 #include "xbee.h"
 
+
 coords getCoords(char name[]);
 void init_time();
 double get_time();
@@ -20,6 +21,7 @@ clock_t t_start;
 
 int main()
 {
+    int READ;
     byteBuffer[0] = '0';
     //Initialization of maze.
     initMinOnes();
@@ -38,9 +40,10 @@ int main()
     //Main loop of the program.
     while(programStatus)
     {
-    readByte(hSerial, byteBuffer);
+    READ = readByte(hSerial, byteBuffer);
 
     printf("Local byteBuffer: %s\n", byteBuffer);
+
 
     //////////////////////////////
     //    Decide what do to based on byteBuffer here, and write to it.
