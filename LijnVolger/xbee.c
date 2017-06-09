@@ -63,7 +63,7 @@ int readByte(HANDLE hSerial, char *buffRead) {
         printf("error reading byte from input buffer \n");
     }
     printf("Byte read from read buffer is: %C \n", buffRead[0]);
-    return(0);
+    return(buffRead[0]);
 }
 
 //--------------------------------------------------------------
@@ -81,7 +81,9 @@ int writeByte(HANDLE hSerial, char *buffWrite){
     }
     printf("Byte written to write buffer is: %c \n", buffWrite[0]);
 
-    return(0);
+
+
+    return(buffWrite[0]);
 }
 
 
@@ -107,10 +109,10 @@ HANDLE initXbee(HANDLE hSerial)
         if(GetLastError()== ERROR_FILE_NOT_FOUND)
         {
             //serial port does not exist. Inform user.
-            printf(" serial port does not exist \n");
+            printf("(Xbee)  serial port does not exist \n");
         }
         //some other error occurred. Inform user.
-        printf(" some other error occured. Inform user.\n");
+        printf("(Xbee) some other error occured. Inform user.\n");
     }
 
     //----------------------------------------------------------
