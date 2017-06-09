@@ -46,27 +46,29 @@ int main()
     //Main loop of the program.
     while(programStatus)
     {
+
+    scanf("%d", &READ); //Temporary user input.
+
+    if (READ == 113) // end the loop by typing 'q'
+        programStatus = 0;
     READ = readByte(hSerial, byteBuffer);
 
-    printf("Local byteBuffer: %s\n", byteBuffer);
+    printf("READ = %d\n", READ);
 
-
+    scanf("%d", &READ); //Temporary user input.
     //////////////////////////////
     //    Decide what do to based on byteBuffer here, and write to it.
 
     WRITE = decide_instruction(READ);
 
-
+    printf("WRITE = %d\n\n", WRITE);
     //////////////////////////////
 
     byteBuffer[0] = WRITE;
 
     writeByte(hSerial, byteBuffer);
 
-    scanf("%d", &READ); //Temporary user input.
 
-    if (READ == 113) // end the loop by typing 'q'
-        programStatus = 0;
 
 
     //displayMaze();
@@ -112,11 +114,16 @@ double get_time()
 
 int decide_instruction(int signal_in)
 {
-    int signal_out;
+    static int signal_out;
 
     double t_elapsed = get_time();
     switch(signal_in)
     {
+        case 0: //"00000000" -> clear
+            signal_out = 0;
+            break;
+
+
         case 9: //"00001001" -> mine
             if((t_elapsed > 0.25*t_line) && (t_elapsed < 0.75*t_line))
             {
@@ -128,7 +135,6 @@ int decide_instruction(int signal_in)
             break;
 
         case 6: //"00000110" -> crossing, corner state, endpoint
-            printf("CASE 6\n");
             if((t_elapsed > 0.75*t_line) && (t_elapsed < 1.25*t_line))
             {
                 //  Crossing: left(6), right(3) or straight ahead (0), for the corner straight does not exist
@@ -139,13 +145,16 @@ int decide_instruction(int signal_in)
                 //endpoint:Take a turn around left (00001111=15) or right (00001010=10)
                 //Go to next place in route
             }
-            else signal_out = 0;
+            else signal_out = 6;
             break;
 
         case 10: //"00001010" ->Receiving error
             break; //Signal_out is not changed
 
-        default: signal_out = 0; break;
+        default:
+            signal_out = 0;
+            printf("ERROR unknown signal.\n");
+            break;
     }
 
     return signal_out;
