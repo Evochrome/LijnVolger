@@ -6,25 +6,19 @@
 
 #IncludeRegexTransform: 
 
-C:/Users/jetse/Documents/GitHub/MazeRouter/LijnVolger/LijnVolger/main.c
+C:/Users/Stefanie/CLionProjects/LineFollower/LijnVolger/LijnVolger/main.c
 string.h
--
-stdio.h
--
-Windows.h
 -
 time.h
 -
 typedefs.h
-C:/Users/jetse/Documents/GitHub/MazeRouter/LijnVolger/LijnVolger/typedefs.h
+C:/Users/Stefanie/CLionProjects/LineFollower/LijnVolger/LijnVolger/typedefs.h
 maze.c
-C:/Users/jetse/Documents/GitHub/MazeRouter/LijnVolger/LijnVolger/maze.c
+C:/Users/Stefanie/CLionProjects/LineFollower/LijnVolger/LijnVolger/maze.c
 router.c
-C:/Users/jetse/Documents/GitHub/MazeRouter/LijnVolger/LijnVolger/router.c
-xbee.c
-C:/Users/jetse/Documents/GitHub/MazeRouter/LijnVolger/LijnVolger/xbee.c
+C:/Users/Stefanie/CLionProjects/LineFollower/LijnVolger/LijnVolger/router.c
 
-C:/Users/jetse/Documents/GitHub/MazeRouter/LijnVolger/LijnVolger/maze.c
+C:/Users/Stefanie/CLionProjects/LineFollower/LijnVolger/LijnVolger/maze.c
 stdio.h
 -
 stdlib.h
@@ -32,39 +26,21 @@ stdlib.h
 string.h
 -
 maze.h
-C:/Users/jetse/Documents/GitHub/MazeRouter/LijnVolger/LijnVolger/maze.h
+C:/Users/Stefanie/CLionProjects/LineFollower/LijnVolger/LijnVolger/maze.h
 
-C:/Users/jetse/Documents/GitHub/MazeRouter/LijnVolger/LijnVolger/maze.h
+C:/Users/Stefanie/CLionProjects/LineFollower/LijnVolger/LijnVolger/maze.h
 typedefs.h
-C:/Users/jetse/Documents/GitHub/MazeRouter/LijnVolger/LijnVolger/typedefs.h
+C:/Users/Stefanie/CLionProjects/LineFollower/LijnVolger/LijnVolger/typedefs.h
 
-C:/Users/jetse/Documents/GitHub/MazeRouter/LijnVolger/LijnVolger/router.c
+C:/Users/Stefanie/CLionProjects/LineFollower/LijnVolger/LijnVolger/router.c
 stdio.h
--
-string.h
 -
 router.h
-C:/Users/jetse/Documents/GitHub/MazeRouter/LijnVolger/LijnVolger/router.h
+C:/Users/Stefanie/CLionProjects/LineFollower/LijnVolger/LijnVolger/router.h
 
-C:/Users/jetse/Documents/GitHub/MazeRouter/LijnVolger/LijnVolger/router.h
+C:/Users/Stefanie/CLionProjects/LineFollower/LijnVolger/LijnVolger/router.h
 typedefs.h
-C:/Users/jetse/Documents/GitHub/MazeRouter/LijnVolger/LijnVolger/typedefs.h
+C:/Users/Stefanie/CLionProjects/LineFollower/LijnVolger/LijnVolger/typedefs.h
 
-C:/Users/jetse/Documents/GitHub/MazeRouter/LijnVolger/LijnVolger/typedefs.h
-
-C:/Users/jetse/Documents/GitHub/MazeRouter/LijnVolger/LijnVolger/xbee.c
-stdio.h
--
-stdlib.h
--
-Windows.h
--
-string.h
--
-xbee.h
-C:/Users/jetse/Documents/GitHub/MazeRouter/LijnVolger/LijnVolger/xbee.h
-
-C:/Users/jetse/Documents/GitHub/MazeRouter/LijnVolger/LijnVolger/xbee.h
-Windows.h
--
+C:/Users/Stefanie/CLionProjects/LineFollower/LijnVolger/LijnVolger/typedefs.h
 
