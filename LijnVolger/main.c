@@ -22,9 +22,9 @@ int main()
 {
     byteBuffer[0] = '0';
     //Initialization of maze.
-    initMinOnes();
-    nameMaze(); //Filename with description of maze.
-    assignStations();
+    initMinOnes(); //Generate grid of -1's
+    nameMaze(); //Generate maze's not -1 values
+    assignStations(); //Add station names
 
 
     //Post initialization events here.
@@ -36,8 +36,7 @@ int main()
     hSerial = initXbee(hSerial);
 
     //Main loop of the program.
-    while(programStatus)
-    {
+    while(programStatus) {
     readByte(hSerial, byteBuffer);
 
     printf("Local byteBuffer: %s\n", byteBuffer);
@@ -55,12 +54,12 @@ int main()
     if (byteBuffer[0] == 'q') // end the loop by typing 'q'
         programStatus = 0;
 
-
     displayMaze();
     }
 
 
     CloseHandle(hSerial); //Close serial handle (important).
+    
     return 0;
 }
 

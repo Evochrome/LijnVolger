@@ -4,26 +4,55 @@
 
 void router()
 {
-    coords startPos, endPos;
-    char startChar[8], endChar[8];
+    int i, j, nearestPoint = 0;
+    coords startPos, endPos[3], oppositePos;
+    char startChar[8], endChar[3][8];
 
-    do
-    {
-        scanf("%s%s", endChar, startChar);
+    do {
 
+        scanf("%s%s%s%s", startChar, endChar[0], endChar[1], endChar[2]);
+
+        endPos[0] = getCoords(endChar[0]);
+        endPos[1] = getCoords(endChar[1]);
+        endPos[2] = getCoords(endChar[2]);
         startPos = getCoords(startChar);
-        endPos = getCoords(endChar);
 
 
 
-        if(startPos.x == -1 || endPos.x == -1)
+        if((endPos[0].x == -1) || (startPos.x == -1) || (endPos[1].x == -1) || (endPos[2].x == -1))
         {
             printf("One or more positions unknown.\n");
         }
-    } while (startPos.x == -1 || endPos.x == -1);
+    } while ((endPos[0].x == -1) || (startPos.x == -1) || (endPos[1].x == -1) || (endPos[2].x == -1));
 
-    spread(endPos, startPos);
-    traceBack(endPos, startPos);
+    for(i=0; i<3; i++) {
+        for(j = 0; j<3; j++) {
+            if(strcmp(endChar[j], "13")!=0) {
+                spread(startPos, endPos[j]);                //doesn't matter which position is chosen
+                break;//from loop                           // as long as it's not already been visited
+            }
+        }
+        nearestPoint = find_nearest_point(endChar[0], endChar[1], endChar[2]);
+
+        //Re-initialization of maze.
+        nameMaze();         //Generate maze's not -1 values
+        assignStations();   //Add station names
+        //Create lee map
+        spread(endPos[nearestPoint], startPos);
+
+        //Get route by tracing backwards
+        traceBack(endPos[nearestPoint], startPos);
+
+        //Does not exist, so will not come up in results anymore
+        sprintf(endChar[nearestPoint], "13");
+
+        // HIER GAAT HET MIS....
+        startPos = endPos[nearestPoint];
+
+        //Re-initialization of maze.
+        nameMaze();         //Generate maze's not -1 values
+        assignStations();   //Add station names
+    }
 }
 
 void spread(coords endPos, coords startPos)
@@ -71,23 +100,24 @@ void setSurroundings(int x, int y, int i)
 }
 
 int find_nearest_point(char* point1, char* point2, char* point3){
-    int minVal = 30, nearest, x, y;
+    int minVal = 30, nearest = 0, x, y;
+
     for(x=0; x<13; x+=12){
         for(y=0; y<13; y++){
             if(strcmp(maze[x][y].name, point1)==0) {
-                if (maze[x][y].v < minVal) {
+                if (maze[x][y].v < minVal && maze[x][y].v !=0) {
+                    minVal = maze[x][y].v;
+                    nearest = 0;
+                }
+            }else if(strcmp(maze[x][y].name, point2)==0){
+                if (maze[x][y].v < minVal && maze[x][y].v !=0) {
                     minVal = maze[x][y].v;
                     nearest = 1;
                 }
-            }else if(strcmp(maze[x][y].name, point2)==0){
-                if (maze[x][y].v < minVal) {
+            }else if(strcmp(maze[x][y].name, point3)==0){
+                if(maze[x][y].v < minVal && maze[x][y].v !=0){
                     minVal = maze[x][y].v;
                     nearest = 2;
-                }
-            }else if(strcmp(maze[x][y].name, point3)==0){
-                if(maze[x][y].v<minVal){
-                    minVal = maze[x][y].v;
-                    nearest = 3;
                 }
             }
         }
@@ -96,24 +126,23 @@ int find_nearest_point(char* point1, char* point2, char* point3){
     for(y=0; y<13; y+=12){
         for(x=0; x<13; x++){
             if(strcmp(maze[x][y].name, point1)==0) {
-                if (maze[x][y].v < minVal) {
+                if (maze[x][y].v < minVal && maze[x][y].v !=0) {
+                    minVal = maze[x][y].v;
+                    nearest = 0;
+                }
+            }else if(strcmp(maze[x][y].name, point2)==0){
+                if (maze[x][y].v < minVal && maze[x][y].v !=0) {
                     minVal = maze[x][y].v;
                     nearest = 1;
                 }
-            }else if(strcmp(maze[x][y].name, point2)==0){
-                if (maze[x][y].v < minVal) {
+            }else if(strcmp(maze[x][y].name, point3)==0){
+                if(maze[x][y].v < minVal && maze[x][y].v !=0){
                     minVal = maze[x][y].v;
                     nearest = 2;
-                }
-            }else if(strcmp(maze[x][y].name, point3)==0){
-                if(maze[x][y].v<minVal){
-                    minVal = maze[x][y].v;
-                    nearest = 3;
                 }
             }
         }
     }
-//    printf("\n%d\n", nearest);
     return nearest;
 }
 
@@ -129,37 +158,32 @@ void traceBack(coords endPos, coords startPos)
     }
 
     printf("%s\n", maze[currentPos.x][currentPos.y].name);
-    printf("\n%d\n", find_nearest_point("12", "10", "3"));
 }
 
 coords checkSurroundings(coords curPos)
 {
-    if(maze[curPos.x + 1][curPos.y].v == maze[curPos.x][curPos.y].v - 1)
-    {
+    if(maze[curPos.x + 1][curPos.y].v == maze[curPos.x][curPos.y].v - 1) {
         if(!((curPos.x % 2 == 1) || (curPos.y % 2 == 1)))
             printf("%s ", maze[curPos.x][curPos.y].name);
         curPos.x++;
         return curPos;
     }
 
-    if(maze[curPos.x - 1][curPos.y].v == maze[curPos.x][curPos.y].v - 1)
-    {
+    if(maze[curPos.x - 1][curPos.y].v == maze[curPos.x][curPos.y].v - 1) {
         if(!((curPos.x % 2 == 1) || (curPos.y % 2 == 1)))
             printf("%s ", maze[curPos.x][curPos.y].name);
         curPos.x--;
         return curPos;
     }
 
-    if(maze[curPos.x][curPos.y + 1].v == maze[curPos.x][curPos.y].v - 1)
-    {
+    if(maze[curPos.x][curPos.y + 1].v == maze[curPos.x][curPos.y].v - 1) {
         if(!((curPos.x % 2 == 1) || (curPos.y % 2 == 1)))
             printf("%s ", maze[curPos.x][curPos.y].name);
         curPos.y++;
         return curPos;
     }
 
-    if(maze[curPos.x][curPos.y-1].v == maze[curPos.x][curPos.y].v - 1)
-    {
+    if(maze[curPos.x][curPos.y-1].v == maze[curPos.x][curPos.y].v - 1) {
         if(!((curPos.x % 2 == 1) || (curPos.y % 2 == 1)))
         {
             printf("%s ", maze[curPos.x][curPos.y].name);
