@@ -7,4 +7,6 @@ CMakeFiles/LijnVolger.dir/main.c.obj: ../maze.h
 CMakeFiles/LijnVolger.dir/main.c.obj: ../router.c
 CMakeFiles/LijnVolger.dir/main.c.obj: ../router.h
 CMakeFiles/LijnVolger.dir/main.c.obj: ../typedefs.h
+CMakeFiles/LijnVolger.dir/main.c.obj: ../xbee.c
+CMakeFiles/LijnVolger.dir/main.c.obj: ../xbee.h
 
