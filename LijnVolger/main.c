@@ -4,14 +4,15 @@
 #include <time.h>
 
 #include "typedefs.h"
-#include "maze.c"
-#include "router.c"
+#include "maze.h"
+#include "router.h"
 #include "maze.h"
 #include "router.h"
 #include "xbee.h"
 
 
 coords getCoords(char name[]);
+int decide_instruction(int signal_in);
 void init_time();
 double get_time();
 cell maze[13][13];
@@ -25,6 +26,7 @@ double t_line = 10.0; //Amount of seconds it takes to travel between two crossin
 int main()
 {
     int READ;
+    int WRITE;
     byteBuffer[0] = '0';
     //Initialization of maze.
 
@@ -52,18 +54,22 @@ int main()
     //////////////////////////////
     //    Decide what do to based on byteBuffer here, and write to it.
 
-    gets(byteBuffer); //Temporary user input.
+    WRITE = decide_instruction(READ);
+
+
     //////////////////////////////
 
-
+    byteBuffer[0] = WRITE;
 
     writeByte(hSerial, byteBuffer);
 
-    if (byteBuffer[0] == 'q') // end the loop by typing 'q'
+    scanf("%d", &READ); //Temporary user input.
+
+    if (READ == 113) // end the loop by typing 'q'
         programStatus = 0;
 
 
-    displayMaze();
+    //displayMaze();
     }
 
 
@@ -103,10 +109,11 @@ double get_time()
     return ((double) (clock() - t_start) / CLOCKS_PER_SEC);
 }
 
-int signal_in;
-int signal_out;
-void decide_instruction(signal_in)
+
+int decide_instruction(int signal_in)
 {
+    int signal_out;
+
     double t_elapsed = get_time();
     switch(signal_in)
     {
@@ -119,7 +126,9 @@ void decide_instruction(signal_in)
             }
             else signal_out = 0;
             break;
+
         case 6: //"00000110" -> crossing, corner state, endpoint
+            printf("CASE 6\n");
             if((t_elapsed > 0.75*t_line) && (t_elapsed < 1.25*t_line))
             {
                 //  Crossing: left(6), right(3) or straight ahead (0), for the corner straight does not exist
@@ -132,10 +141,14 @@ void decide_instruction(signal_in)
             }
             else signal_out = 0;
             break;
+
         case 10: //"00001010" ->Receiving error
             break; //Signal_out is not changed
+
         default: signal_out = 0; break;
     }
+
+    return signal_out;
 }
 
 
