@@ -143,7 +143,7 @@ int decide_instruction(int signal_in)
                 //endpoint:Take a turn around left (00001111=15) or right (00001010=10)
                 //Go to next place in route
             }
-            else signal_out = 6;
+            else signal_out = 0;
             break;
 
         case 10: //"00001010" ->Receiving error
