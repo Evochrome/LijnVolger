@@ -112,8 +112,8 @@ int decide_instruction(int signal_in)
 {
     static int signal_out;
     int t_line = 100;
-
     double t_elapsed = get_time();
+
     switch(signal_in)
     {
         case 0: //"00000000" -> clear
@@ -142,7 +142,7 @@ int decide_instruction(int signal_in)
                 //endpoint:Take a turn around left (00001111=15) or right (00001010=10)
                 //Go to next place in route
             }
-            else signal_out = 0;
+            else signal_out = 6;
             break;
 
         case 10: //"00001010" ->Receiving error
