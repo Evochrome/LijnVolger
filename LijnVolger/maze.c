@@ -62,14 +62,23 @@ void nameMaze() {
     middleLine = (N - 1) / 2;
     firstOffset = middleLine - 2;
     lastOffset = middleLine + 2;
+    countEdgeX = countEdgeY = countX = countY = 0;
     for(x = 0; x < N; x++) {
         for(y = 0; y < N; y++) {
-            if(!(x % 2) && x >= (firstOffset-2) && x <= (lastOffset+2)) {
+            if(!(x % 2) && x >= (firstOffset) && x <= (lastOffset)) {
                 maze[x][y].v = 0;
                 sprintf(maze[x][y].name, "");
-            }else if(!(y % 2) && y >= (firstOffset-2) && y <= (lastOffset+2)) {
+            }else if(!(y % 2) && y >= (firstOffset) && y <= (lastOffset)) {
                 maze[x][y].v = 0;
                 sprintf(maze[x][y].name, "");
+            }else if (x >= (firstOffset-2) && x <= (lastOffset+2) && y>=(firstOffset-2) && y <= (lastOffset+2)){
+                if (!(x % 2)){
+                    maze[x][y].v = 0;
+                    sprintf(maze[x][y].name, "");
+                }else if(!(y % 2)){
+                    maze[x][y].v = 0;
+                    sprintf(maze[x][y].name, "");
+                }
             }else {
                 maze[x][y].v = -1;
                 sprintf(maze[x][y].name, "");

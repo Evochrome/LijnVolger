@@ -10,4 +10,11 @@ typedef struct {
     int x, y;
 } coords;
 
+struct NAV
+{
+    char c;
+    struct NAV * next;
+};
+typedef struct NAV nav;
+
 #endif // TYPEDEFS_H_INCLUDED

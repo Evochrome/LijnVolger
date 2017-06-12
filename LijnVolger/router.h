@@ -5,7 +5,8 @@
 
 extern cell maze[13][13];
 
-
+nav *head;
+nav *list;
 
 coords getCoords(char name[]); //Defined in main.c
 
@@ -17,5 +18,10 @@ int find_nearest_point(char* point1, char* point2, char* point3);
 
 void setSurroundings(int x, int y, int i);
 coords checkSurroundings(coords curPos);
+
+void map_translator(coords LastPos, coords CurPos, coords NextPos);
+void initialize_translator();
+
+
 
 #endif // ROUTER_H_INCLUDED

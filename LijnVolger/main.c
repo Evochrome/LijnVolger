@@ -6,9 +6,7 @@
 #include "typedefs.h"
 #include "maze.c"
 #include "router.c"
-#include "maze.h"
-#include "router.h"
-#include "xbee.h"
+#include "xbee.c"
 
 
 coords getCoords(char name[]);
@@ -19,7 +17,6 @@ char byteBuffer[BUFSIZ+1];
 int programStatus = 1; //0 = program should turn of, 1 = should run.
 
 clock_t t_start;
-double t_line = 10.0; //Amount of seconds it takes to travel between two crossings
 
 
 int main()
@@ -27,10 +24,9 @@ int main()
     int READ;
     byteBuffer[0] = '0';
     //Initialization of maze.
-
-    initMinOnes();
-    nameMaze(); //Filename with description of maze.
-    assignStations();
+    initMinOnes(); //Generate grid of -1's
+    nameMaze(); //Generate maze's not -1 values
+    assignStations(); //Add station names
 
 
     //Post initialization events here.
@@ -62,12 +58,12 @@ int main()
     if (byteBuffer[0] == 'q') // end the loop by typing 'q'
         programStatus = 0;
 
-
     displayMaze();
     }
 
 
     CloseHandle(hSerial); //Close serial handle (important).
+
     return 0;
 }
 
@@ -93,49 +89,12 @@ coords getCoords(char name[])
     return cords;
 }
 
-void init_time ()
+void init_time()
 {
     t_start = clock();
 }
 
 double get_time()
 {
-    return ((double) (clock() - t_start) / CLOCKS_PER_SEC);
+    return (double)((clock() - t_start)/CLOCKS_PER_SEC);
 }
-
-int signal_in;
-int signal_out;
-void decide_instruction(signal_in)
-{
-    double t_elapsed = get_time();
-    switch(signal_in)
-    {
-        case 9: //"00001001" -> mine
-            if((t_elapsed > 0.25*t_line) && (t_elapsed < 0.75*t_line))
-            {
-                //mine:Recheck route
-                //Take a turn around left (00001111=15) or right (00001010=10)
-                //Go to next place in route
-            }
-            else signal_out = 0;
-            break;
-        case 6: //"00000110" -> crossing, corner state, endpoint
-            if((t_elapsed > 0.75*t_line) && (t_elapsed < 1.25*t_line))
-            {
-                //  Crossing: left(6), right(3) or straight ahead (0), for the corner straight does not exist
-                //Go to next place in route
-            }
-            else if ((t_elapsed > 0.15*t_line) && (t_elapsed < 0.65*t_line))
-            {
-                //endpoint:Take a turn around left (00001111=15) or right (00001010=10)
-                //Go to next place in route
-            }
-            else signal_out = 0;
-            break;
-        case 10: //"00001010" ->Receiving error
-            break; //Signal_out is not changed
-        default: signal_out = 0; break;
-    }
-}
-
-
