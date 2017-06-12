@@ -6,9 +6,7 @@
 #include "typedefs.h"
 #include "maze.c"
 #include "router.c"
-#include "maze.h"
-#include "router.h"
-#include "xbee.h"
+#include "xbee.c"
 
 
 coords getCoords(char name[]);
@@ -113,6 +111,7 @@ double get_time()
 int decide_instruction(int signal_in)
 {
     static int signal_out;
+    int t_line = 100;
 
     double t_elapsed = get_time();
     switch(signal_in)
