@@ -17,7 +17,11 @@ cell maze[13][13];
 char byteBuffer[BUFSIZ+1];
 int programStatus = 1; //0 = program should turn of, 1 = should run.
 
-clock_t t_start;
+clock_t t_start; //starting time of the clock
+double t_line = 10.0; //seconds required to drive a straight line
+double t_turn = 5.0; //seconds required to make a turn
+double t_back = 5.0; //seconds required to turn around at a mine
+double t_req = 10.0; //seconds required until he next crossing (calculated with the above constants)
 
 
 int main()
@@ -29,12 +33,13 @@ int main()
     initMinOnes(); //Generate grid of -1's
     nameMaze(); //Generate maze's not -1 values
     assignStations(); //Add station names
+    init_time();
 
 
     //Post initialization events here.
-    blockEdges();   //Find out what edges/crossings need to be blocked.
+    //blockEdges();   //Find out what edges/crossings need to be blocked.
     router();       //Lee's algorithm.
-
+    list = head;
     //Xbee initialization.
     HANDLE hSerial = NULL;
     hSerial = initXbee(hSerial);
@@ -111,18 +116,15 @@ double get_time()
 int decide_instruction(int signal_in)
 {
     static int signal_out;
-    int t_line = 100;
     double t_elapsed = get_time();
-
     switch(signal_in)
     {
         case 0: //"00000000" -> clear
             signal_out = 0;
             break;
 
-
         case 9: //"00001001" -> mine
-            if((t_elapsed > 0.25*t_line) && (t_elapsed < 0.75*t_line))
+            if((t_elapsed > 0.25*t_req) && (t_elapsed < 0.75*t_req))
             {
                 //mine:Recheck route
                 //Take a turn around left (00001111=15) or right (00001010=10)
@@ -132,17 +134,34 @@ int decide_instruction(int signal_in)
             break;
 
         case 6: //"00000110" -> crossing, corner state, endpoint
-            if((t_elapsed > 0.75*t_line) && (t_elapsed < 1.25*t_line))
+            printf("t_elapsed: %2f\n", t_elapsed);
+            printf("list: %c\n", list->c);
+            if((t_elapsed > 0.75*t_req) && (t_elapsed < 1.25*t_req))
             {
-                //  Crossing: left(6), right(3) or straight ahead (0), for the corner straight does not exist
-                //Go to next place in route
+                if (list->c == 'l')
+                {
+                    signal_out = 6;
+                    t_req = t_line + t_turn;
+                }
+                else if (list->c == 'r')
+                {
+                    signal_out = 3;
+                    t_req = t_line + t_turn;
+                }
+                else if (list->c == 's')
+                {
+                    signal_out = 0;
+                    t_req = t_line;
+                }
+                list = list->next;
+                init_time();
             }
-            else if ((t_elapsed > 0.15*t_line) && (t_elapsed < 0.65*t_line))
-            {
+            //else if ((t_elapsed > 0.15*t_req) && (t_elapsed < 0.65*t_req))
+           // {
                 //endpoint:Take a turn around left (00001111=15) or right (00001010=10)
                 //Go to next place in route
-            }
-            else signal_out = 6;
+          //  }
+            else signal_out = 0;
             break;
 
         case 10: //"00001010" ->Receiving error
