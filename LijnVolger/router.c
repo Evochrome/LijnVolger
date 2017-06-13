@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "router.h"
-
+#include "maze.h"
 
 
 void router()
 {
     int i, j, nearestPoint = 0;
-    coords startPos, endPos[3], oppositePos;
+    coords startPos, endPos[3];
     char startChar[8], endChar[3][8];
 
     do {
@@ -44,11 +45,9 @@ void router()
 
         //Get route by tracing backwards
         traceBack(endPos[nearestPoint], startPos);
-
         //Does not exist, so will not come up in results anymore
-        sprintf(endChar[nearestPoint], "13");
+        sprintf(endChar[nearestPoint], "14");
 
-        // HIER GAAT HET MIS....
         startPos = endPos[nearestPoint];
 
         //Re-initialization of maze.
@@ -80,9 +79,11 @@ void spread(coords endPos, coords startPos)
 
 void setSurroundings(int x, int y, int i)
 {
-    if(maze[x+1][y].v == 0)
-    {
-        maze[x+1][y].v = i+1;
+    if(x!=12){
+        if(maze[x+1][y].v == 0)
+        {
+            maze[x+1][y].v = i+1;
+        }
     }
 
     if(maze[x-1][y].v == 0)
@@ -90,9 +91,11 @@ void setSurroundings(int x, int y, int i)
         maze[x-1][y].v = i+1;
     }
 
-    if(maze[x][y+1].v == 0)
-    {
-        maze[x][y+1].v = i+1;
+    if(y!=12){
+        if(maze[x][y+1].v == 0)
+        {
+            maze[x][y+1].v = i+1;
+        }
     }
 
     if(maze[x][y-1].v == 0)
@@ -177,21 +180,21 @@ coords checkSurroundings(coords curPos)
         return curPos;
     }
 
-    if(maze[curPos.x - 1][curPos.y].v == maze[curPos.x][curPos.y].v - 1) {
+    else if(maze[curPos.x - 1][curPos.y].v == maze[curPos.x][curPos.y].v - 1) {
         if(!((curPos.x % 2 == 1) || (curPos.y % 2 == 1)))
             printf("%s ", maze[curPos.x][curPos.y].name);
         curPos.x--;
         return curPos;
     }
 
-    if(maze[curPos.x][curPos.y + 1].v == maze[curPos.x][curPos.y].v - 1) {
+    else if(maze[curPos.x][curPos.y + 1].v == maze[curPos.x][curPos.y].v - 1) {
         if(!((curPos.x % 2 == 1) || (curPos.y % 2 == 1)))
             printf("%s ", maze[curPos.x][curPos.y].name);
         curPos.y++;
         return curPos;
     }
 
-    if(maze[curPos.x][curPos.y-1].v == maze[curPos.x][curPos.y].v - 1) {
+    else if(maze[curPos.x][curPos.y-1].v == maze[curPos.x][curPos.y].v - 1) {
         if(!((curPos.x % 2 == 1) || (curPos.y % 2 == 1)))
         {
             printf("%s ", maze[curPos.x][curPos.y].name);
@@ -200,7 +203,6 @@ coords checkSurroundings(coords curPos)
         curPos.y--;
         return curPos;
     }
-
     return curPos;
 }
 
