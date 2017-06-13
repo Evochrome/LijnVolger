@@ -11,6 +11,8 @@ void router()
     coords startPos, endPos[3];
     char startChar[8], endChar[3][8];
 
+    initialize_translator();
+
     do {
 
         scanf("%s%s%s%s", startChar, endChar[0], endChar[1], endChar[2]);
@@ -157,7 +159,6 @@ void traceBack(coords endPos, coords startPos)
     currentPos.x = startPos.x;
     currentPos.y = startPos.y;
 
-    initialize_translator();
     Cross.x = 97;
     PreCross.x = 97;
     while(!((currentPos.x == endPos.x) && (currentPos.y == endPos.y)))

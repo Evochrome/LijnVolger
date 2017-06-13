@@ -4,9 +4,9 @@
 #include <time.h>
 
 #include "typedefs.h"
-#include "maze.c"
-#include "router.c"
-#include "xbee.c"
+#include "maze.h"
+#include "router.h"
+#include "xbee.h"
 
 
 coords getCoords(char name[]);
@@ -120,7 +120,7 @@ int decide_instruction(int signal_in)
     switch(signal_in)
     {
         case 0: //"00000000" -> clear
-            signal_out = 0;
+            signal_out = 1;
             break;
 
         case 9: //"00001001" -> mine
@@ -130,7 +130,7 @@ int decide_instruction(int signal_in)
                 //Take a turn around left (00001111=15) or right (00001010=10)
                 //Go to next place in route
             }
-            else signal_out = 0;
+            else signal_out = 1;
             break;
 
         case 6: //"00000110" -> crossing, corner state, endpoint
@@ -150,7 +150,7 @@ int decide_instruction(int signal_in)
                 }
                 else if (list->c == 's')
                 {
-                    signal_out = 0;
+                    signal_out = 1;
                     t_req = t_line;
                 }
                 list = list->next;
@@ -161,14 +161,14 @@ int decide_instruction(int signal_in)
                 //endpoint:Take a turn around left (00001111=15) or right (00001010=10)
                 //Go to next place in route
           //  }
-            else signal_out = 0;
+            else signal_out = 1;
             break;
 
         case 10: //"00001010" ->Receiving error
             break; //Signal_out is not changed
 
         default:
-            signal_out = 0;
+            signal_out = 1;
             printf("ERROR unknown signal.\n");
             break;
     }
