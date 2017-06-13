@@ -4,3 +4,8 @@ LijnVolger/cmake-build-debug/CMakeFiles/LijnVolger.dir/depend.internal
 *.make
 LijnVolger/cmake-build-debug/LijnVolger.exe
 LijnVolger/cmake-build-debug/LijnVolger.exe
+*.cmake
+LijnVolger/cmake-build-debug/CMakeFiles/3.6.3/CMakeDetermineCompilerABI_C.bin
+*.bin
+LijnVolger/cmake-build-debug/CMakeFiles/3.6.3/CompilerIdC/CMakeCCompilerId.c
+*.exe
