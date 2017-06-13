@@ -48,21 +48,26 @@ int main()
     while(programStatus)
     {
 
-    scanf("%d", &READ); //Temporary user input.
+    //scanf("%d", &READ); //Temporary user input.
+
+    if (list->next == NULL)
+        READ = 113;
 
     if (READ == 113) // end the loop by typing 'q'
         programStatus = 0;
     READ = readByte(hSerial, byteBuffer);
 
-    printf("READ = %d\n", READ);
+    //printf("READ = %d\n", READ);
 
-    scanf("%d", &READ); //Temporary user input.
+    //scanf("%d", &READ); //Temporary user input.
     //////////////////////////////
     //    Decide what do to based on byteBuffer here, and write to it.
 
     WRITE = decide_instruction(READ);
 
-    printf("WRITE = %d\n\n", WRITE);
+
+
+    //printf("WRITE = %d\n\n", WRITE);
     //////////////////////////////
 
     byteBuffer[0] = WRITE;
