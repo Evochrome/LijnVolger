@@ -18,10 +18,11 @@ char byteBuffer[BUFSIZ+1];
 int programStatus = 1; //0 = program should turn of, 1 = should run.
 
 clock_t t_start; //starting time of the clock
-double t_line = 10.0; //seconds required to drive a straight line
-double t_turn = 5.0; //seconds required to make a turn
+double t_line = 3.6; //seconds required to drive a straight line
+double t_turn = 1; //seconds required to make a turn
 double t_back = 5.0; //seconds required to turn around at a mine
-double t_req = 10.0; //seconds required until he next crossing (calculated with the above constants)
+double t_req = 3.6; //seconds required until he next crossing (calculated with the above constants)
+
 
 
 int main()
@@ -29,6 +30,7 @@ int main()
     int READ;
     int WRITE;
     byteBuffer[0] = '0';
+
     //Initialization of maze.
     initMinOnes(); //Generate grid of -1's
     nameMaze(); //Generate maze's not -1 values
@@ -44,6 +46,10 @@ int main()
     HANDLE hSerial = NULL;
     hSerial = initXbee(hSerial);
 
+    list = list->next;
+
+
+
     //Main loop of the program.
     while(programStatus)
     {
@@ -57,7 +63,7 @@ int main()
         programStatus = 0;
     READ = readByte(hSerial, byteBuffer);
 
-    //printf("READ = %d\n", READ);
+    printf("READ = %d\n", READ);
 
     //scanf("%d", &READ); //Temporary user input.
     //////////////////////////////
@@ -67,7 +73,7 @@ int main()
 
 
 
-    //printf("WRITE = %d\n\n", WRITE);
+    printf("WRITE = %d\n\n", WRITE);
     //////////////////////////////
 
     byteBuffer[0] = WRITE;
@@ -82,6 +88,7 @@ int main()
 
 
     CloseHandle(hSerial); //Close serial handle (important).
+
 
     return 0;
 }
@@ -141,32 +148,38 @@ int decide_instruction(int signal_in)
         case 6: //"00000110" -> crossing, corner state, endpoint
             printf("t_elapsed: %2f\n", t_elapsed);
             printf("list: %c\n", list->c);
-            if((t_elapsed > 0.75*t_req) && (t_elapsed < 1.25*t_req))
+            if(((t_elapsed > 0.75*t_req) && (t_elapsed < 1.25*t_req)) || t_elapsed < 0.2)
             {
                 if (list->c == 'l')
                 {
-                    signal_out = 6;
-                    t_req = t_line + t_turn;
+                    signal_out = 3;
+                    if (t_elapsed > 1.0*t_req)
+                        t_req = t_line + t_turn;
                 }
                 else if (list->c == 'r')
                 {
-                    signal_out = 3;
-                    t_req = t_line + t_turn;
+                    signal_out = 6;
+                    if (t_elapsed > 1.0*t_req)
+                        t_req = t_line + t_turn;
                 }
                 else if (list->c == 's')
                 {
                     signal_out = 1;
                     t_req = t_line;
                 }
+
+                if (t_elapsed > 1.1*t_req)
                 list = list->next;
-                init_time();
+
             }
+            if (t_elapsed > 1.1*t_req){
+                    init_time();}
             //else if ((t_elapsed > 0.15*t_req) && (t_elapsed < 0.65*t_req))
            // {
                 //endpoint:Take a turn around left (00001111=15) or right (00001010=10)
                 //Go to next place in route
           //  }
-            else signal_out = 1;
+            //else signal_out = 1;
             break;
 
         case 10: //"00001010" ->Receiving error

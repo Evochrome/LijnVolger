@@ -5,7 +5,7 @@
 
 #include "xbee.h"
 
-#define COMPORT "COM8"
+#define COMPORT "COM9"
 #define BAUDRATE CBR_9600
 
 //--------------------------------------------------------------
