@@ -18,6 +18,7 @@ char byteBuffer[BUFSIZ+1];
 int programStatus = 1; //0 = program should turn of, 1 = should run.
 
 clock_t t_start; //starting time of the clock
+clock_t t_anti_reset;
 double t_line = 3.6; //seconds required to drive a straight line
 double t_turn = 1; //seconds required to make a turn
 double t_back = 5.0; //seconds required to turn around at a mine
@@ -115,6 +116,14 @@ coords getCoords(char name[])
     return cords;
 }
 
+void init_anti_time(){
+    t_anti_reset = clock();
+}
+
+double get_anti_time(){
+    return ((double) (clock() - t_anti_reset) / CLOCKS_PER_SEC);
+}
+
 void init_time()
 {
     t_start = clock();
@@ -129,6 +138,7 @@ int decide_instruction(int signal_in)
 {
     static int signal_out;
     double t_elapsed = get_time();
+    double t_last_reset = get_anti_time();
     switch(signal_in)
     {
         case 0: //"00000000" -> clear
@@ -147,33 +157,50 @@ int decide_instruction(int signal_in)
 
         case 6: //"00000110" -> crossing, corner state, endpoint
             printf("t_elapsed: %2f\n", t_elapsed);
+            printf("t_last_reset: %2f\n", t_last_reset);
             printf("list: %c\n", list->c);
-            if(((t_elapsed > 0.75*t_req) && (t_elapsed < 1.25*t_req)) || t_elapsed < 0.2)
+            if(((t_elapsed > 0.75*t_req) && (t_elapsed < 1.25*t_req)) || (t_elapsed < 0.2))
             {
                 if (list->c == 'l')
                 {
-                    signal_out = 3;
+                    signal_out = 0x03;
                     if (t_elapsed > 1.0*t_req)
                         t_req = t_line + t_turn;
+
+                        if (t_elapsed < 0.2 && t_last_reset >0.6 ){
+                            init_time();
+                            init_anti_time();
+                        }
                 }
                 else if (list->c == 'r')
                 {
-                    signal_out = 6;
+                    signal_out = 0x06;
                     if (t_elapsed > 1.0*t_req)
                         t_req = t_line + t_turn;
+
+                         if (t_elapsed < 0.2 && t_last_reset >0.6 ){
+                            init_time();
+                            init_anti_time();
+                        }
                 }
                 else if (list->c == 's')
                 {
-                    signal_out = 1;
+                    signal_out = 0x01;
                     t_req = t_line;
+
+                     if (t_elapsed < 0.2 && t_last_reset >0.6 ){
+                            init_time();
+                            init_anti_time();
+                        }
                 }
 
                 if (t_elapsed > 1.1*t_req)
                 list = list->next;
 
             }
-            if (t_elapsed > 1.1*t_req){
-                    init_time();}
+            if (t_elapsed > 1.1*t_req ){
+                    init_time();
+            }
             //else if ((t_elapsed > 0.15*t_req) && (t_elapsed < 0.65*t_req))
            // {
                 //endpoint:Take a turn around left (00001111=15) or right (00001010=10)

@@ -48,7 +48,7 @@ void router()
         //Get route by tracing backwards
         traceBack(endPos[nearestPoint], startPos);
         //Does not exist, so will not come up in results anymore
-        sprintf(endChar[nearestPoint], "14");
+        sprintf(endChar[nearestPoint], "13");
 
         startPos = endPos[nearestPoint];
 
