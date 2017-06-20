@@ -18,16 +18,16 @@ char byteBuffer[BUFSIZ+1];
 char writeBuffer[BUFSIZ+1];
 int programStatus = 1; //0 = program should turn of, 1 = should run.
 void writeFor(int direction, double seconds, HANDLE hSerial);
-void writeFor_Start(int direction, double seconds, HANDLE hSerial);
+//void writeFor_Start(int direction, double seconds, HANDLE hSerial);
 void clearBuf();
 clock_t t_start;
 clock_t t_spam;
-double t_line = 3.6; //seconds required to drive a straight line
+double t_line = 3.5; //seconds required to drive a straight line
 double t_turn = 1; //seconds required to make a turn
 double t_back = 5.0; //seconds required to turn around at a mine
 double t_req = 3.6; //seconds required until he next crossing (calculated with the above constants)
 int READ;
-int start = 0;
+int start = 0, atCrossing = 0;
 
 
 int main()
@@ -55,7 +55,7 @@ int main()
     //list = list->next; //One ahead of list. Necessary?
 
     //From starting position check if an immediate right or left is needed, then continue.
-    /*while(start == 0){
+    while(start == 0){
         clearBuf();
         READ = readByte(hSerial, byteBuffer);
         printf("executed\nREAD: %d\n", READ);
@@ -64,15 +64,16 @@ int main()
         if(READ!=6){
             start = 1;
         }
-    }*/
-    writeFor_Start(1, 0.2, hSerial);
+    }
+    //writeFor(1, 0.2, hSerial);
     if(list->c == 's')
-        writeFor_Start(1, 1.5, hSerial);
+        writeFor(1, 2.0, hSerial);
     else if (list->c == 'l')
-        writeFor_Start(3, 1.5, hSerial);
+        writeFor(3, 2.0, hSerial);
     else if (list->c == 'r')
-        writeFor_Start(6, 1.5, hSerial);
-    init_time(); //Needs to be timed correctly
+        writeFor(6, 2.0, hSerial);
+    printf("\nI RESET\n\n");
+    //init_time(); //Needs to be timed correctly
     list = list->next;
 
 
@@ -106,6 +107,9 @@ int main()
     //displayMaze();
     }
 
+    writeBuffer[0] = 0;
+
+    writeByte(hSerial, writeBuffer);
 
     CloseHandle(hSerial); //Close serial handle (important).
 
@@ -160,23 +164,36 @@ int decide_instruction(int signal_in, HANDLE hSerial)
     static int signal_out;
     double t_elapsed = get_time();
 
-    if(t_elapsed>0.70*t_line){
+    if(start){
+        init_time();
+        start = 0;
+        printf("INIT TIME!");
+    }
+
+    if(list->v==1){
+        t_req = 1.5;
+        printf("\n\nENDPOINT!!!!!!!\n\n");
+    }else{
+        t_req = t_line;
+    }
+
+    if(t_elapsed>0.75*t_req){
             printf("DO SOMETHING @time= %f\n", t_elapsed);
         if(list->c == 's')
-            writeFor(1, t_line-t_elapsed + 1, hSerial);
+            writeFor(1, t_line-t_elapsed + 3.0, hSerial);
         else if (list->c == 'l')
-            writeFor(3, t_line-t_elapsed + 1, hSerial);
+            writeFor(3, t_line-t_elapsed + 3.0, hSerial);
         else if (list->c == 'r')
-            writeFor(6, t_line-t_elapsed + 1, hSerial);
+            writeFor(6, t_line-t_elapsed + 3.0, hSerial);
 
-        while(signal_in != 1)
+        /*while(signal_in != 1)
         {
             READ = readByte(hSerial, byteBuffer);
-            if(READ!=6||READ!=9||READ!=3)
+            if(READ!=6||READ!=9||READ!=3||READ!=4)
                 signal_in = 1;
         }
 
-        init_time();
+        init_time();*/
         list = list->next;
     }
 
@@ -191,20 +208,29 @@ void writeFor(int direction, double seconds, HANDLE hSerial)
     double t_elapsed = 0.0;
     init_spam_time();
 
-    while((t_elapsed < seconds))// && (READ!=6))
+    while(t_elapsed < seconds)
     {
         clearBuf();
         READ = readByte(hSerial, byteBuffer);
         writeBuffer[0] = direction;
-        printf("READ = %d\nSpam: %d\n@time= %f\n",READ, direction, t_elapsed);
+        printf("READ = %d\nSpam: %d\n@time= %f\n", READ, direction, t_elapsed);
         printf("WRITE = %d\n\n", direction);
         writeByte(hSerial, writeBuffer);
         t_elapsed = get_spam_time();
+        if(READ==6){
+            atCrossing = 1;
+        }
+        if(atCrossing && (READ==3)){
+            break;
+        }
+
     }
+    init_time();
+    atCrossing = 0;
 
 }
 
-void writeFor_Start(int direction, double seconds, HANDLE hSerial)
+/*void writeFor_Start(int direction, double seconds, HANDLE hSerial)
 {
     double t_elapsed = 0.0;
     init_spam_time();
@@ -221,9 +247,8 @@ void writeFor_Start(int direction, double seconds, HANDLE hSerial)
 
     }
 
-}
+}*/
 
 void clearBuf(){
-    int i;
     byteBuffer[0] = 0;
 }

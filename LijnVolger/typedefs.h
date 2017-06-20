@@ -13,6 +13,7 @@ typedef struct {
 struct NAV
 {
     char c;
+    int v;
     struct NAV * next;
 };
 typedef struct NAV nav;

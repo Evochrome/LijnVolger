@@ -158,6 +158,8 @@ void traceBack(coords endPos, coords startPos)
     coords currentPos, PreCross, Cross;
     currentPos.x = startPos.x;
     currentPos.y = startPos.y;
+    nav *list;
+    list = head;
 
     Cross.x = 97;
     PreCross.x = 97;
@@ -168,7 +170,10 @@ void traceBack(coords endPos, coords startPos)
         currentPos = checkSurroundings(currentPos);
         map_translator(PreCross, Cross, currentPos);
     }
-
+    while (list->next != NULL) {
+        list = list->next;
+    }
+    list->v = 1;
     printf("%s\n", maze[currentPos.x][currentPos.y].name);
 }
 
@@ -227,6 +232,7 @@ void map_translator(coords LastPos, coords CurPos, coords NextPos)
             }
         }
         list->next = new;
+        list->v = 0;
         if (CurPos.x > LastPos.x) {
             if (NextPos.y < CurPos.y) list->c = 'l';
             else if (NextPos.x > CurPos.x) list->c = 's';
