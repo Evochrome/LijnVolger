@@ -15,23 +15,27 @@ void init_time();
 double get_time();
 cell maze[13][13];
 char byteBuffer[BUFSIZ+1];
+char writeBuffer[BUFSIZ+1];
 int programStatus = 1; //0 = program should turn of, 1 = should run.
 void writeFor(int direction, double seconds, HANDLE hSerial);
-
+void writeFor_Start(int direction, double seconds, HANDLE hSerial);
+void clearBuf();
 clock_t t_start;
 clock_t t_spam;
 double t_line = 3.6; //seconds required to drive a straight line
 double t_turn = 1; //seconds required to make a turn
 double t_back = 5.0; //seconds required to turn around at a mine
 double t_req = 3.6; //seconds required until he next crossing (calculated with the above constants)
-
+int READ;
+int start = 0;
 
 
 int main()
 {
-    int READ;
-    int WRITE;
     byteBuffer[0] = '0';
+    writeBuffer[0] = '0';
+    int WRITE;
+
 
     //Initialization of maze.
     initMinOnes(); //Generate grid of -1's
@@ -51,17 +55,32 @@ int main()
     //list = list->next; //One ahead of list. Necessary?
 
     //From starting position check if an immediate right or left is needed, then continue.
+    /*while(start == 0){
+        clearBuf();
+        READ = readByte(hSerial, byteBuffer);
+        printf("executed\nREAD: %d\n", READ);
+        writeBuffer[0] = 1;
+        writeByte(hSerial, writeBuffer);
+        if(READ!=6){
+            start = 1;
+        }
+    }*/
+    writeFor_Start(1, 0.2, hSerial);
     if(list->c == 's')
-        writeFor(1, 0.6, hSerial);
+        writeFor_Start(1, 1.5, hSerial);
     else if (list->c == 'l')
-        writeFor(3, 0.6, hSerial);
+        writeFor_Start(3, 1.5, hSerial);
     else if (list->c == 'r')
-        writeFor(6, 0.6, hSerial);
+        writeFor_Start(6, 1.5, hSerial);
     init_time(); //Needs to be timed correctly
+    list = list->next;
+
 
     //Main loop of the program.
     while(programStatus)
     {
+
+
 
     //scanf("%d", &READ); //Temporary user input.
 
@@ -79,10 +98,11 @@ int main()
     printf("WRITE = %d\n\n", WRITE);
     //////////////////////////////
 
-    byteBuffer[0] = WRITE;
+    writeBuffer[0] = WRITE;
 
-    writeByte(hSerial, byteBuffer);
+    writeByte(hSerial, writeBuffer);
 
+    clearBuf();
     //displayMaze();
     }
 
@@ -136,47 +156,32 @@ double get_time()
 
 int decide_instruction(int signal_in, HANDLE hSerial)
 {
+
     static int signal_out;
     double t_elapsed = get_time();
-    switch(signal_in)
-    {
-        case 0: //"00000000" -> clear
-            signal_out = 1;
-            break;
 
-        case 9: //"00001001" -> mine
-            if((t_elapsed > 0.25*t_req) && (t_elapsed < 0.75*t_req))
-            {
-                //mine:Recheck route
-                //Take a turn around left (00001111=15) or right (00001010=10)
-                //Go to next place in route
-            }
-            else signal_out = 1;
-            break;
+    if(t_elapsed>0.70*t_line){
+            printf("DO SOMETHING @time= %f\n", t_elapsed);
+        if(list->c == 's')
+            writeFor(1, t_line-t_elapsed + 1, hSerial);
+        else if (list->c == 'l')
+            writeFor(3, t_line-t_elapsed + 1, hSerial);
+        else if (list->c == 'r')
+            writeFor(6, t_line-t_elapsed + 1, hSerial);
 
-        case 6: //"00000110" -> crossing, corner state, endpoint
-            printf("t_elapsed: %2f\n", t_elapsed);
-            printf("list: %c\n", list->c);
+        while(signal_in != 1)
+        {
+            READ = readByte(hSerial, byteBuffer);
+            if(READ!=6||READ!=9||READ!=3)
+                signal_in = 1;
+        }
 
-            if(t_elapsed > 0.75*t_req)
-            {
-                if(list->c == 's')
-                    writeFor(1, t_turn, hSerial);
-                else if (list->c == 'l')
-                    writeFor(3, t_turn, hSerial);
-                else if (list->c == 'r')
-                    writeFor(6, t_turn, hSerial);
-                init_time();
-            }
-
-        case 10: //"00001010" ->Receiving error
-            break; //Signal_out is not changed
-
-        default:
-            signal_out = 1;
-            printf("ERROR unknown signal.\n");
-            break;
+        init_time();
+        list = list->next;
     }
+
+    signal_out = 1;
+
 
     return signal_out;
 }
@@ -186,10 +191,39 @@ void writeFor(int direction, double seconds, HANDLE hSerial)
     double t_elapsed = 0.0;
     init_spam_time();
 
-    while(t_elapsed < seconds)
+    while((t_elapsed < seconds))// && (READ!=6))
     {
-        byteBuffer[0] = direction;
-        writeByte(hSerial, byteBuffer);
+        clearBuf();
+        READ = readByte(hSerial, byteBuffer);
+        writeBuffer[0] = direction;
+        printf("READ = %d\nSpam: %d\n@time= %f\n",READ, direction, t_elapsed);
+        printf("WRITE = %d\n\n", direction);
+        writeByte(hSerial, writeBuffer);
         t_elapsed = get_spam_time();
     }
+
+}
+
+void writeFor_Start(int direction, double seconds, HANDLE hSerial)
+{
+    double t_elapsed = 0.0;
+    init_spam_time();
+
+    while(t_elapsed < seconds)
+    {
+        clearBuf();
+        READ = readByte(hSerial, byteBuffer);
+        writeBuffer[0] = direction;
+        printf("Spam: %d\n", direction);
+        writeByte(hSerial, writeBuffer);
+        t_elapsed = get_spam_time();
+
+
+    }
+
+}
+
+void clearBuf(){
+    int i;
+    byteBuffer[0] = 0;
 }
