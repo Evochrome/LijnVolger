@@ -28,7 +28,7 @@ double t_back = 5.0; //seconds required to turn around at a mine
 double t_req = 3.6; //seconds required until he next crossing (calculated with the above constants)
 double t_elapsed;
 int READ;
-int ready = 0, start = 0, steps;
+int ready = 0, start = 0, steps = 1;
 
 
 int main()
@@ -37,8 +37,8 @@ int main()
     writeBuffer[0] = '0';
     int WRITE;
 
-
     //Initialization of maze.
+    initialize_blocks(); //Creates an empty list of mines
     initMinOnes(); //Generate grid of -1's
     nameMaze(); //Generate maze's not -1 values
     assignStations(); //Add station names
@@ -141,7 +141,29 @@ int main()
 
         if(READ == 9){
             printf("FOUND A MINE BITCHES!");
-            //ReRouter etc...
+            WRITE = decide_instruction(9, hSerial);
+            writeBuffer[0] = WRITE;
+            writeByte(hSerial, writeBuffer);
+            printf("WRITE = %d\n\n", WRITE);
+            //reset_time
+            init_time();
+            t_elapsed = get_time();
+            while (t_elapsed < 0.6) {
+                t_elapsed = get_time();
+//                if(t_elapsed>0.5&&(READ == 3 || READ == 0)){
+//                    break;
+//                }
+            }
+            while (READ != 3){ //&& READ != 0) {
+                READ = readByte(hSerial, byteBuffer);
+            }
+            WRITE = 1;// Go straight after instruction :)
+            printf("WRITE = %d\n\n", WRITE);
+            //////////////////////////////
+            writeBuffer[0] = WRITE;
+            writeByte(hSerial, writeBuffer);
+            ready = 0;
+            init_time();
         }
     }
 }
@@ -209,7 +231,7 @@ int decide_instruction(int signal_in, HANDLE hSerial)
 
         case 9: //"00001001" -> mine
             printf("MIIINEEEEEE!!!!\n");
-            //recheckRoute(steps);
+            recheckRoute(steps);
             list = head;
             if (list->c == 'r')
             {

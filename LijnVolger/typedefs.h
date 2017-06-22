@@ -13,9 +13,16 @@ typedef struct {
 struct NAV
 {
     char c;
-    int v;
     struct NAV * next;
 };
 typedef struct NAV nav;
+
+struct BLOCK
+{
+    int x;
+    int y;
+    struct BLOCK * next;
+};
+typedef struct BLOCK block;
 
 #endif // TYPEDEFS_H_INCLUDED

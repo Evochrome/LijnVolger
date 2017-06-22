@@ -9,12 +9,17 @@ int firstOffset, middleLine, lastOffset;
 int countX, countY, countEdgeY, countEdgeX, x, y;
 
 
+
 coords getCoords(char name[]); //Defined in main.c
 
 void initMinOnes();
 void displayMaze();
 void assignStations();
 void nameMaze();
-void blockEdges();
+void blockEdges(int x, int y);
+void initialize_blocks();
+void display_mines();
+
+block *mine_head;
 
 #endif // MAZE_H_INCLUDED

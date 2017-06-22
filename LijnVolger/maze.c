@@ -106,27 +106,48 @@ void nameMaze() {
             countEdgeX++;
         }
     }
+    if (mine_head->next != NULL) {
+        block *mines = mine_head;
+        while (mines->next != NULL) {
+            mines = mines->next;
+            maze[mines->x][mines->y].v = -1;
+        }
+    }
 }
 
-void blockEdges() {
-    int i, n;
-    char block[8];
-    coords cords;
+void initialize_blocks()
+{
+    mine_head = (block*)malloc(sizeof(block));
+    mine_head->next = NULL;
+}
 
-    scanf("%d", &n);
-
-    for(i = 0; i < n; i++)
+void blockEdges(int x, int y) {
+    maze[x][y].v = -1;
+    block *mines = mine_head;
+    block *new = (block*)malloc(sizeof(block));
+    new->next = NULL;
+    new->x = x;
+    new->y = y;
+    if (mine_head->next != NULL)
     {
-        scanf("%s", block);
-        cords = getCoords(block);
-        if(cords.x == -1 || cords.y == -1)
+        while (mines->next != NULL)
         {
-            printf("Error coord does not exist on map.\n");
+            mines = mines->next;
         }
-        else
-        {
-            maze[cords.x][cords.y].v = -1;
-        }
+        mines->next = new;
+    }
+    else
+    {
+        mine_head->next = new;
+    }
+}
+
+void display_mines()
+{
+    block *mines = mine_head;
+    while (mines->next != NULL) {
+        mines = mines->next;
+        printf("The mine position is: (%d, %d)\n", mines->x, mines->y);
     }
 }
 
@@ -136,7 +157,7 @@ void displayMaze() {
 
     for(i = 0; i < 13; i++)
     {
-        for(j = 0; j < 13; j++)
+        for(j = 0; j <= 13; j++)
         {
             if(maze[j][i].v != -1)
             {

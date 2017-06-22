@@ -10,19 +10,19 @@ void router()
     int i, j, nearestPoint = 0;
     coords startPos, endPos[3];
     char startChar[8], endChar[3][8];
-
-    initialize_translator();
+    mine_found = 0;
 
     do {
 
         scanf("%s%s%s%s", startChar, endChar[0], endChar[1], endChar[2]);
-
+        startPos = getCoords(startChar);
         endPos[0] = getCoords(endChar[0]);
         endPos[1] = getCoords(endChar[1]);
         endPos[2] = getCoords(endChar[2]);
-        startPos = getCoords(startChar);
+        ends_reached = 0;
 
-
+        coordinatepoints[0][0] = startPos.x;
+        coordinatepoints[1][0] = startPos.y;
 
         if((endPos[0].x == -1) || (startPos.x == -1) || (endPos[1].x == -1) || (endPos[2].x == -1))
         {
@@ -30,7 +30,7 @@ void router()
         }
     } while ((endPos[0].x == -1) || (startPos.x == -1) || (endPos[1].x == -1) || (endPos[2].x == -1));
 
-    for(i=0; i<3; i++) {
+    for(i=0+ends_reached; i<3; i++) {
         for(j = 0; j<3; j++) {
             if(strcmp(endChar[j], "13")!=0) {
                 spread(startPos, endPos[j]);                //doesn't matter which position is chosen
@@ -42,13 +42,19 @@ void router()
         //Re-initialization of maze.
         nameMaze();         //Generate maze's not -1 values
         assignStations();   //Add station names
+
+        //The right order of end points is read into the mine rerouter
+        coordinatepoints[0][i + 1] = endPos[nearestPoint].x;
+        coordinatepoints[1][i + 1] = endPos[nearestPoint].y;
+
+
         //Create lee map
         spread(endPos[nearestPoint], startPos);
 
         //Get route by tracing backwards
         traceBack(endPos[nearestPoint], startPos);
         //Does not exist, so will not come up in results anymore
-        sprintf(endChar[nearestPoint], "13");
+        sprintf(endChar[nearestPoint], "14");
 
         startPos = endPos[nearestPoint];
 
@@ -56,6 +62,48 @@ void router()
         nameMaze();         //Generate maze's not -1 values
         assignStations();   //Add station names
     }
+}
+
+void rerouter()
+{
+    int i;
+    coords startPos, endPos[3];
+
+    startPos = Start_point;
+    for (i = 0; i < ends_reached; i++)
+    {
+        endPos[i].x = 15;
+        endPos[i].y = 15;
+    }
+    for (i = ends_reached; i < 3; i++)
+    {
+        endPos[i].x = coordinatepoints[0][i + 1];
+        endPos[i].y = coordinatepoints[1][i + 1];
+    }
+    printf("I found the rerouter.\n");
+    coordinatepoints[0][0] = startPos.x;
+    coordinatepoints[1][0] = startPos.y;
+
+
+    for(i=0+ends_reached; i<3; i++) {
+
+        //Re-initialization of maze.
+        nameMaze();         //Generate maze's not -1 values
+        assignStations();   //Add station names
+
+        //Create lee map
+        spread(endPos[i], startPos);
+
+        //Get route by tracing backwards
+        traceBack(endPos[i], startPos);
+
+        startPos = endPos[i];
+
+        //Re-initialization of maze.
+        nameMaze();         //Generate maze's not -1 values
+        assignStations();   //Add station names
+    }
+    display_mines();
 }
 
 void spread(coords endPos, coords startPos)
@@ -158,22 +206,22 @@ void traceBack(coords endPos, coords startPos)
     coords currentPos, PreCross, Cross;
     currentPos.x = startPos.x;
     currentPos.y = startPos.y;
-    nav *list;
-    list = head;
 
+    initialize_translator();
     Cross.x = 97;
-    PreCross.x = 97;
     while(!((currentPos.x == endPos.x) && (currentPos.y == endPos.y)))
     {
-        PreCross = Cross;
+        if (mine_found == 1)
+        {
+            PreCross = mine;
+            mine_found = 0;
+        }
+        else PreCross = Cross;
         Cross = currentPos;
         currentPos = checkSurroundings(currentPos);
         map_translator(PreCross, Cross, currentPos);
     }
-    while (list->next != NULL) {
-        list = list->next;
-    }
-    list->v = 1;
+
     printf("%s\n", maze[currentPos.x][currentPos.y].name);
 }
 
@@ -232,7 +280,6 @@ void map_translator(coords LastPos, coords CurPos, coords NextPos)
             }
         }
         list->next = new;
-        list->v = 0;
         if (CurPos.x > LastPos.x) {
             if (NextPos.y < CurPos.y) list->c = 'l';
             else if (NextPos.x > CurPos.x) list->c = 's';
@@ -257,3 +304,41 @@ void map_translator(coords LastPos, coords CurPos, coords NextPos)
     }
 };
 
+void recheckRoute(int steps)
+{
+    coords block;
+    block = tracePos(steps);
+    blockEdges(block.x, block.y);
+    mine.x = x;
+    mine.y = y;
+    mine_found = 1;
+    rerouter();
+}
+
+coords tracePos(int steps)
+{
+    coords currentPos, endPos, startPos;
+    int i, j = 0;
+
+    currentPos.x = coordinatepoints[0][0];
+    currentPos.y = coordinatepoints[1][0];
+    startPos.x = coordinatepoints[0][0];
+    startPos.y = coordinatepoints[1][0];
+
+    for (i = 1; i < 4; i++)
+    {
+        endPos.x = coordinatepoints[0][i];
+        endPos.y = coordinatepoints[1][i];
+        nameMaze();         //Generate maze's not -1 values
+        assignStations();   //Add station names
+        spread(endPos, startPos);
+        while(!((currentPos.x == endPos.x) && (currentPos.y == endPos.y)))
+        {
+            Start_point = currentPos; //Makes sure the last point is recorded as the new startpoint
+            currentPos = checkSurroundings(currentPos);
+            j++;
+            if (j == steps) return currentPos;
+        }
+        ends_reached++;
+    }
+}

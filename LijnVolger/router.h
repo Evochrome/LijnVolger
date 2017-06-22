@@ -22,6 +22,11 @@ coords checkSurroundings(coords curPos);
 void map_translator(coords LastPos, coords CurPos, coords NextPos);
 void initialize_translator();
 
+void recheckRoute(int steps);
+coords tracePos(int steps);
 
+int coordinatepoints[2][4];
+int ends_reached, mine_found;
+coords Start_point, mine;
 
 #endif // ROUTER_H_INCLUDED
