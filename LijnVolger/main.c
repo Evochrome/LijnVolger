@@ -17,16 +17,10 @@ cell maze[13][13];
 char byteBuffer[BUFSIZ+1];
 char writeBuffer[BUFSIZ+1];
 int programStatus = 1; //0 = program should turn of, 1 = should run.
-void writeFor(int direction, double seconds, HANDLE hSerial);
-//void writeFor_Start(int direction, double seconds, HANDLE hSerial);
 void clearBuf();
-void displayTranslate();
 clock_t t_start;
 clock_t t_spam;
 double t_line = 3.6; //seconds required to drive a straight line
-double t_turn = 1.0; //seconds required to make a turn
-double t_back = 5.0; //seconds required to turn around at a mine
-double t_req = 3.6; //seconds required until he next crossing (calculated with the above constants)
 double t_elapsed;
 int READ;
 int ready = 0, start = 0, steps = 1;
@@ -46,16 +40,12 @@ int main()
 
 
     //Post initialization events here.
-    //blockEdges();   //Find out what edges/crossings need to be blocked.
     router();       //Lee's algorithm.
-    //displayTranslate();
     list = head;
 
     //Xbee initialization.
     HANDLE hSerial = NULL;
     hSerial = initXbee(hSerial);
-
-    //list = list->next; //One ahead of list. Necessary?
 
     //From starting position check if an immediate right or left is needed, then continue.
     while(start == 0){
@@ -75,7 +65,6 @@ int main()
     writeBuffer[0] = WRITE;
     writeByte(hSerial, writeBuffer);
     printf("\nI RESET\n\n");
-    //init_time(); //Needs to be timed correctly
 
 
 
@@ -86,7 +75,6 @@ int main()
     if (READ == 113) { // end the loop by typing 'q'
         programStatus = 0;
     }
-    //init_time();
     while(1) { //Endless loop until break
         t_elapsed = get_time();
         clearBuf();
@@ -125,9 +113,6 @@ int main()
             t_elapsed = get_time();
             while (t_elapsed < 0.6) {
                 t_elapsed = get_time();
-//                if(t_elapsed>0.5&&(READ == 3 || READ == 0)){
-//                    break;
-//                }
             }
             while (READ != 3){ //&& READ != 0) {
                 READ = readByte(hSerial, byteBuffer);
@@ -152,9 +137,6 @@ int main()
             t_elapsed = get_time();
             while (t_elapsed < 0.6) {
                 t_elapsed = get_time();
-//                if(t_elapsed>0.5&&(READ == 3 || READ == 0)){
-//                    break;
-//                }
             }
             while (READ != 3){ //&& READ != 0) {
                 READ = readByte(hSerial, byteBuffer);
@@ -286,67 +268,6 @@ int decide_instruction(int signal_in, HANDLE hSerial)
     return signal_out;
 }
 
-void writeFor(int direction, double seconds, HANDLE hSerial)
-{
-    /*double t_elapsed = 0.0;
-    init_spam_time();
-    writeBuffer[0] = direction;
-
-    while(t_elapsed < seconds)
-    {
-        clearBuf();
-        READ = readByte(hSerial, byteBuffer);
-        printf("READ = %d\nSpam: %d\n@time= %f\n", READ, direction, t_elapsed);
-        printf("WRITE = %d\n\n", direction);
-        writeByte(hSerial, writeBuffer);
-        t_elapsed = get_spam_time();
-        if(READ==6){
-            atCrossing = 1;
-        }
-        printf("At crossing: %d, READ = %d\n", atCrossing, READ);
-        if(atCrossing && (READ==3)){
-            break;
-        }
-
-    }
-
-    init_time();
-    atCrossing = 0;*/
-
-}
-
-/*void writeFor_Start(int direction, double seconds, HANDLE hSerial)
-{
-    double t_elapsed = 0.0;
-    init_spam_time();
-
-    while(t_elapsed < seconds)
-    {
-        clearBuf();
-        READ = readByte(hSerial, byteBuffer);
-        writeBuffer[0] = direction;
-        printf("Spam: %d\n", direction);
-        writeByte(hSerial, writeBuffer);
-        t_elapsed = get_spam_time();
-
-
-    }
-
-}*/
-
 void clearBuf(){
     byteBuffer[0] = 0;
-}
-
-
-void displayTranslate()
-{
-    nav *list = head;
-    printf("been here!\n\n");
-    while(list->next != NULL)
-    {
-        printf("been here!\n\n");
-        printf("Instruction: %c \n", list->c);
-        list = list-> next;
-    }
 }

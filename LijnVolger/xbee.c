@@ -1,7 +1,5 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <Windows.h>
-#include <string.h>
 
 #include "xbee.h"
 
@@ -79,7 +77,6 @@ int writeByte(HANDLE hSerial, char *buffWrite){
     {
         printf("error writing byte to output buffer \n");
     }
-    //printf("Byte written to write buffer is: %c \n", buffWrite[0]);
 
 
 
