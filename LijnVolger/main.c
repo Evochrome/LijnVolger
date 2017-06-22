@@ -8,22 +8,21 @@
 #include "router.h"
 #include "xbee.h"
 
-
+//Functions
 coords getCoords(char name[]);
 int decide_instruction(int signal_in, HANDLE hSerial);
-void init_time();
 double get_time();
-cell maze[13][13];
-char byteBuffer[BUFSIZ+1];
-char writeBuffer[BUFSIZ+1];
-int programStatus = 1; //0 = program should turn of, 1 = should run.
+void init_time();
 void clearBuf();
+
+//Vars
+cell maze[13][13];
 clock_t t_start;
-clock_t t_spam;
+int programStatus = 1; //0 = program should turn of, 1 = should run.
+int READ, ready = 0, start = 0, steps = 1;
 double t_line = 3.6; //seconds required to drive a straight line
 double t_elapsed;
-int READ;
-int ready = 0, start = 0, steps = 1;
+char byteBuffer[BUFSIZ+1], writeBuffer[BUFSIZ+1];
 
 
 int main()
@@ -162,7 +161,7 @@ int main()
     return 0;
 }
 
-coords getCoords(char name[])
+coords getCoords(char name[]) //Finds the coordinates that belong to a point in the maze (called by name)
 {
     int x, y;
     coords cords;
@@ -184,26 +183,17 @@ coords getCoords(char name[])
     return cords;
 }
 
-
-void init_spam_time(){
-    t_spam = clock();
-}
-
-double get_spam_time(){
-    return ((double) (clock() - t_spam) / CLOCKS_PER_SEC);
-}
-
-void init_time()
+void init_time() //Resets time
 {
     t_start = clock();
 }
 
-double get_time()
+double get_time() //Determines time since last reset
 {
     return ((double) (clock() - t_start) / CLOCKS_PER_SEC);
 }
 
-int decide_instruction(int signal_in, HANDLE hSerial)
+int decide_instruction(int signal_in, HANDLE hSerial) //Either sends the predetermined position, or reacts to a mine
 {
     static int signal_out;
 

@@ -81,11 +81,10 @@ void rerouter()
         endPos[i].y = coordinatepoints[1][i + 1];
     }
     printf("I found the rerouter.\n");
-    coordinatepoints[0][0] = startPos.x;
-    coordinatepoints[1][0] = startPos.y;
+    startPos = Start_point;
 
 
-    for(i=0+ends_reached; i<3; i++) {
+    for(i=ends_reached; i<3; i++) {
 
         //Re-initialization of maze.
         nameMaze();         //Generate maze's not -1 values

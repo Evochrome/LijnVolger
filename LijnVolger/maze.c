@@ -57,7 +57,8 @@ void assignStations() {
     }
 }
 
-void nameMaze() {
+void nameMaze() //Adds names to postions in maze
+{
     middleLine = (N - 1) / 2;
     firstOffset = middleLine - 2;
     lastOffset = middleLine + 2;
@@ -114,13 +115,14 @@ void nameMaze() {
     }
 }
 
-void initialize_blocks()
+void initialize_blocks() //Initialize list of mines
 {
     mine_head = (block*)malloc(sizeof(block));
     mine_head->next = NULL;
 }
 
-void blockEdges(int x, int y) {
+void blockEdges(int x, int y) //Places a mine on position (x, y) and adds it to the list of mines
+{
     maze[x][y].v = -1;
     block *mines = mine_head;
     block *new = (block*)malloc(sizeof(block));
@@ -141,7 +143,7 @@ void blockEdges(int x, int y) {
     }
 }
 
-void display_mines()
+void display_mines() //Shows a list of mine positions
 {
     block *mines = mine_head;
     while (mines->next != NULL) {
@@ -151,7 +153,8 @@ void display_mines()
 }
 
 
-void displayMaze() {
+void displayMaze() //Shows the maze
+{
     int i, j;
 
     for(i = 0; i < 13; i++)
