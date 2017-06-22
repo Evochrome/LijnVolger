@@ -10,7 +10,8 @@ void router()
     int i, j, nearestPoint = 0;
     coords startPos, endPos[3];
     char startChar[8], endChar[3][8];
-    mine_found = 0;
+
+    initialize_translator();
 
     do {
 
@@ -28,9 +29,9 @@ void router()
         {
             printf("One or more positions unknown.\n");
         }
-    } while ((endPos[0].x == -1) || (startPos.x == -1) || (endPos[1].x == -1) || (endPos[2].x == -1));
+        } while ((endPos[0].x == -1) || (startPos.x == -1) || (endPos[1].x == -1) || (endPos[2].x == -1));
 
-    for(i=0+ends_reached; i<3; i++) {
+    for(i=0; i<3; i++) {
         for(j = 0; j<3; j++) {
             if(strcmp(endChar[j], "13")!=0) {
                 spread(startPos, endPos[j]);                //doesn't matter which position is chosen
@@ -47,14 +48,13 @@ void router()
         coordinatepoints[0][i + 1] = endPos[nearestPoint].x;
         coordinatepoints[1][i + 1] = endPos[nearestPoint].y;
 
-
         //Create lee map
         spread(endPos[nearestPoint], startPos);
 
         //Get route by tracing backwards
         traceBack(endPos[nearestPoint], startPos);
         //Does not exist, so will not come up in results anymore
-        sprintf(endChar[nearestPoint], "14");
+        sprintf(endChar[nearestPoint], "13");
 
         startPos = endPos[nearestPoint];
 
@@ -207,7 +207,6 @@ void traceBack(coords endPos, coords startPos)
     currentPos.x = startPos.x;
     currentPos.y = startPos.y;
 
-    initialize_translator();
     Cross.x = 97;
     while(!((currentPos.x == endPos.x) && (currentPos.y == endPos.y)))
     {
@@ -221,7 +220,6 @@ void traceBack(coords endPos, coords startPos)
         currentPos = checkSurroundings(currentPos);
         map_translator(PreCross, Cross, currentPos);
     }
-
     printf("%s\n", maze[currentPos.x][currentPos.y].name);
 }
 

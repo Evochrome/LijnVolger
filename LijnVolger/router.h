@@ -29,4 +29,5 @@ int coordinatepoints[2][4];
 int ends_reached, mine_found;
 coords Start_point, mine;
 
+
 #endif // ROUTER_H_INCLUDED

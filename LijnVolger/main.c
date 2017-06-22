@@ -20,6 +20,7 @@ int programStatus = 1; //0 = program should turn of, 1 = should run.
 void writeFor(int direction, double seconds, HANDLE hSerial);
 //void writeFor_Start(int direction, double seconds, HANDLE hSerial);
 void clearBuf();
+void displayTranslate();
 clock_t t_start;
 clock_t t_spam;
 double t_line = 3.6; //seconds required to drive a straight line
@@ -47,6 +48,7 @@ int main()
     //Post initialization events here.
     //blockEdges();   //Find out what edges/crossings need to be blocked.
     router();       //Lee's algorithm.
+    //displayTranslate();
     list = head;
 
     //Xbee initialization.
@@ -334,4 +336,17 @@ void writeFor(int direction, double seconds, HANDLE hSerial)
 
 void clearBuf(){
     byteBuffer[0] = 0;
+}
+
+
+void displayTranslate()
+{
+    nav *list = head;
+    printf("been here!\n\n");
+    while(list->next != NULL)
+    {
+        printf("been here!\n\n");
+        printf("Instruction: %c \n", list->c);
+        list = list-> next;
+    }
 }
